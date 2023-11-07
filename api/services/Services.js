@@ -12,6 +12,7 @@ class Services {
     return db(this.nomeModelo).where(parametro);
   }
 
+
   async criarRegistro(dados){
     return db(this.nomeModelo).insert(dados);
   }
