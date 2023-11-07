@@ -1,7 +1,7 @@
 import Services from "../services/index.js";
 import criarHashSenha from "../helpers/criarHashSenha.js";
 import verificaSenha from "../helpers/verificaSenha.js";
-import { criarToken } from "../helpers/token.js";
+import { criarToken,  resgatarPayLoadToken } from "../helpers/token.js";
 const {UsuariosServices} = Services;
 const usuariosServices = new UsuariosServices;
 
@@ -53,6 +53,25 @@ class UsuariosController {
       const token = criarToken(usuario);
 
       return res.status(200).json({mensagem:'Usuário logado com sucesso', token:  token})
+    } catch (erro) {
+      console.log(erro);
+      next(erro);
+    }
+  }
+
+  static async detalharUsuario(req, res, next){
+    
+    try {
+      const idUsuario = await resgatarPayLoadToken(req);
+      
+      const [usuario] = await usuariosServices.listarRegistroPorParametro({idusuarios: idUsuario});
+
+      const usuarioSemSenha = {
+        nome: usuario.nome,
+        email: usuario.email
+      }
+
+      return res.status(200).json({usuario: usuarioSemSenha})
     } catch (erro) {
       console.log(erro);
       next(erro);
