@@ -63,8 +63,8 @@ class UsuariosController {
     
     try {
       const idUsuario = await resgatarPayLoadToken(req);
-      
-      const [usuario] = await usuariosServices.listarRegistroPorParametro({idusuarios: idUsuario});
+      console.log(idUsuario)
+      const [usuario] = await usuariosServices.listarRegistroPorParametro({id: idUsuario});
 
       const usuarioSemSenha = {
         nome: usuario.nome,
@@ -72,6 +72,37 @@ class UsuariosController {
       }
 
       return res.status(200).json({usuario: usuarioSemSenha})
+    } catch (erro) {
+      console.log(erro);
+      next(erro);
+    }
+  }
+
+  static async atualizarUsuario(req, res, next){
+    const {nome, email, senha} = req.body;
+    try {
+      const idUsuario = await resgatarPayLoadToken(req);
+      
+      const senhaHash = criarHashSenha(senha);
+      
+      const emailUnico = await usuariosServices.verificarEmailUnico({email: email}, idUsuario);
+
+      if(emailUnico.length){
+        return res.status(409).json({mensagem: 'Email já cadastrado em outra conta.'});
+      }
+
+      const informacoesUsuario = {
+        nome: nome, 
+        email: email,
+        senha: senhaHash
+      }
+
+      const resultadoAtualizacao = await usuariosServices.atualizarRegistro(informacoesUsuario, {id: idUsuario});
+      if(resultadoAtualizacao < 1 ){
+        return res.status(409).json({mensagem: 'Usuário não atualizado'})
+      }
+
+      return res.status(200).json({mensagem: 'Usuário atualizado com sucesso'});
     } catch (erro) {
       console.log(erro);
       next(erro);
