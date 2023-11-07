@@ -3,9 +3,12 @@
  * @returns { Promise<void> }
  */
 export function up (knex)  {
-  return knex.schema.createTableIfNotExists('categorias', (tabela)=> {
+  return knex.schema.createTableIfNotExists('produtos', (tabela)=> {
     tabela.increments('id').primary().notNullable();
     tabela.string('descricao', 45).notNullable();
+    tabela.integer('quantidade_estoque').notNullable();
+    tabela.integer('categoria_id').notNullable().unsigned();
+    tabela.foreign('categoria_id').references('categorias.id').onUpdate('CASCADE');
     tabela.timestamps(true, true);
   });
 };
@@ -15,5 +18,6 @@ export function up (knex)  {
  * @returns { Promise<void> }
  */
 export function down (knex)  {
-  return knex.schema.dropTable('categorias');
+  return knex.schema.dropTable('produtos');
 };
+
