@@ -42,4 +42,13 @@ const produtosEditarSchema = yup.object({
   })
 })
 
-export {produtosCadastrarSchema, produtosEditarSchema}
+const produtosListarSchema = yup.object({
+  query: yup.object().shape({
+    categoria_id: yup.number()
+    .typeError('O query categoria_id na url só recebe números')
+    .positive('O query categoria_id na url só recebe números só recebe números positivos')
+    .integer('O query categoria_id na url só recebe números só recebe números inteiros')
+  })
+})
+
+export {produtosCadastrarSchema, produtosEditarSchema, produtosListarSchema}
