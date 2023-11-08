@@ -1,5 +1,5 @@
 import e from "express";
-import { produtosCadastrarSchema, produtosEditarSchema, produtosListarSchema } from "../schemas/produtosSchema.js";
+import { produtosSchema } from "../schemas/produtosSchema.js";
 import Services from '../services/index.js';
 const {ProdutosServices} = Services;
 const produtosServices = new ProdutosServices;
@@ -9,9 +9,9 @@ const categoriasServices = new CategoriasServices;
 class ProdutosControlller {
   static async cadastrarPorduto(req, res, next ){
     try {
-      const dadosValidadosCorpo = await produtosCadastrarSchema.validate({body: req.body});
+      const dadosValidadosCorpo = await produtosSchema.fields.body.validate(req.body);
 
-      const {descricao, categoria_id, valor, quantidade_estoque} = dadosValidadosCorpo.body;
+      const {descricao, categoria_id, valor, quantidade_estoque} = dadosValidadosCorpo;
 
       const [categoria] = await categoriasServices.listarRegistroPorParametro({id: categoria_id});
       
@@ -32,6 +32,7 @@ class ProdutosControlller {
 
       return res.status(201).json(novoProduto);
     } catch (erro) {
+      console.log(erro)
       next(erro);
     }
   }
@@ -39,7 +40,7 @@ class ProdutosControlller {
   static async atualizarProduto(req, res, next){
 
     try {
-      const valoresProdutoValidado = await produtosEditarSchema.validate(
+      const valoresProdutoValidado = await produtosSchema.validate(
         {
           body: req.body, 
           params: req.params
@@ -47,6 +48,7 @@ class ProdutosControlller {
       );
 
       const {id} = valoresProdutoValidado.params;
+
       const {descricao, quantidade_estoque, valor, categoria_id } = valoresProdutoValidado.body;
       
       const [produto] = await produtosServices.listarRegistroPorParametro({id}); 
@@ -83,8 +85,8 @@ class ProdutosControlller {
 
   static async listarProdutos(req, res, next){
     try {
-      const dadosValidados =  await produtosListarSchema.validate({query: req.query});
-      const {categoria_id} = dadosValidados.query;
+      const dadosValidados =  await produtosSchema.fields.query.validate(req.query);
+      const {categoria_id} = dadosValidados;
       
       if(categoria_id){
 
@@ -102,7 +104,23 @@ class ProdutosControlller {
       return res.status(200).json(listaProdutos);
       
     } catch (erro) {
-      console.log(erro)
+      next(erro);
+    }
+  }
+
+  static async detalharProduto(req, res, next){
+    try {
+      const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
+      const {id} = dadosValidados;
+
+      const [produto] = await produtosServices.listarRegistroPorParametro({id});
+
+      if(!produto){
+        return res.status(404).json({mensagem: 'Produto não encontrado.'})
+      }
+      
+      return res.status(200).json(produto);
+    } catch (erro) {
       next(erro);
     }
   }
