@@ -1,15 +1,16 @@
-import db from '../db/conecaodb.js'
+import db from '../db/conecaodb.js';
+import knex from 'knex';
 class Services {
   constructor(nomeModelo){
     this.nomeModelo = nomeModelo
   }
 
   async listarRegistros(){
-    return db(this.nomeModelo)
+    return db(this.nomeModelo).whereNull('deletedAt');
   }
 
   async listarRegistroPorParametro(parametro){
-    return db(this.nomeModelo).where(parametro);
+    return db(this.nomeModelo).where(parametro).whereNull('deletedAt');
   }
 
 
@@ -21,7 +22,12 @@ class Services {
     return db(this.nomeModelo).update(novosDados).where(parametro);
   }
 
+  async excluirRegistro(parametro){
+    return db(this.nomeModelo).update({deletedAt: new Date()}).where(parametro);
+  }
+  
 
 }
+
 
 export {Services}

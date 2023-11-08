@@ -8,6 +8,7 @@ router
 .get('/produto/:id', verificarToken, ProdutosControlller.detalharProduto)
 .post('/produto', verificarToken, ProdutosControlller.cadastrarPorduto)
 .put('/produto/:id',  verificarToken, ProdutosControlller.atualizarProduto)
+.delete('/produto/:id', verificarToken, ProdutosControlller.deletarProduto)
 
 
 export default router;

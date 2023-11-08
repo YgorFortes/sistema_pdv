@@ -124,6 +124,32 @@ class ProdutosControlller {
       next(erro);
     }
   }
+
+  static async deletarProduto(req, res, next){
+
+    try {
+      const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
+      const {id} = dadosValidados;
+
+      const [produto] = await produtosServices.listarRegistroPorParametro({id});
+
+      if(!produto){
+        return res.status(404).json({mensagem: 'Produto não encontrado.'})
+      }
+
+      const resultadoExclusao = await produtosServices.excluirRegistro({id});
+      
+      if(resultadoExclusao < 1){
+        return res.status(409).json({mensagem: 'Produto não excluido.'});
+      }
+
+      return res.status(200).json({mensagem: 'Produto excluido com sucesso.'});
+    } catch (erro) {
+      console.log(erro);
+      next(erro);
+    }
+    
+  }
 }
 
 export default ProdutosControlller;
