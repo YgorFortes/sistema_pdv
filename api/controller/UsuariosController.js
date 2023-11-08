@@ -2,26 +2,30 @@ import Services from "../services/index.js";
 import criarHashSenha from "../helpers/criarHashSenha.js";
 import verificaSenha from "../helpers/verificaSenha.js";
 import { criarToken,  resgatarPayLoadToken } from "../helpers/token.js";
+import { registroSchema, loginSchema, editarUsuarioSchema } from "../schemas/usuariosSchemas.js";
+
 const {UsuariosServices} = Services;
 const usuariosServices = new UsuariosServices;
 
 class UsuariosController {
 
   static async criarUsuario(req, res, next){
+    
     try {
-      const {nome, email, senha} = req.body;
+      const dadosValidadosCorpo = await registroSchema.validate({body: req.body});
 
+      const {nome, email, senha} = dadosValidadosCorpo.body;
+    
       const emailExiste = await usuariosServices.listarRegistroPorParametro({email});
-     
+      
       if(emailExiste.length){
         return res.status(409).json({mensagem: 'Email já cadastrado'});
       }
-
+      
       const senhaHash = criarHashSenha(senha);
-
       const usuario = {
-        nome, 
-        email, 
+        nome: nome,
+        email: email,
         senha: senhaHash
       }
 
@@ -29,14 +33,16 @@ class UsuariosController {
    
       return res.status(201).json({mensagem: 'Usuário cadastrado com sucesso'});
     } catch (erro) {
-      console.log(erro);
-      next(erro);
+      next(erro)
     }
   }
 
   static async login(req, res , next){
-    const {email, senha} = req.body;
     try {
+
+      const dadosValidosCorpo = await loginSchema.validate({body: req.body});
+      
+      const {email, senha} = dadosValidosCorpo.body;
 
       const [usuario] = await usuariosServices.listarRegistroPorParametro({email});
 
@@ -54,7 +60,6 @@ class UsuariosController {
 
       return res.status(200).json({mensagem:'Usuário logado com sucesso', token:  token})
     } catch (erro) {
-      console.log(erro);
       next(erro);
     }
   }
@@ -79,8 +84,12 @@ class UsuariosController {
   }
 
   static async atualizarUsuario(req, res, next){
-    const {nome, email, senha} = req.body;
     try {
+
+      const dadosValidadosCorpo  = await editarUsuarioSchema.validate({body: req.body});
+
+      const {nome, email, senha} = dadosValidadosCorpo.body;
+
       const idUsuario = await resgatarPayLoadToken(req);
       
       const senhaHash = criarHashSenha(senha);
@@ -99,7 +108,7 @@ class UsuariosController {
 
       const resultadoAtualizacao = await usuariosServices.atualizarRegistro(informacoesUsuario, {id: idUsuario});
       if(resultadoAtualizacao < 1 ){
-        return res.status(409).json({mensagem: 'Usuário não atualizado'})
+        return res.status(409).json({mensagem: 'Usuário não atualizado'});
       }
 
       return res.status(200).json({mensagem: 'Usuário atualizado com sucesso'});

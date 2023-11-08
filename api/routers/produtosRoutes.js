@@ -1,7 +1,8 @@
 import { Router } from "express";
 import ProdutosControlller from "../controller/ProdutosController.js";
+
 const router = Router();
 
 router
-.get('/produtos', ProdutosControlller.listarProdutos)
+.post('/produtos', ProdutosControlller.cadastrarPordutos)
 export default router;
