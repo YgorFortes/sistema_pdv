@@ -126,7 +126,6 @@ class ProdutosControlller {
   }
 
   static async deletarProduto(req, res, next){
-
     try {
       const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
@@ -144,6 +143,31 @@ class ProdutosControlller {
       }
 
       return res.status(200).json({mensagem: 'Produto excluido com sucesso.'});
+    } catch (erro) {
+      console.log(erro);
+      next(erro);
+    }
+    
+  }
+
+  static async reativarProduto(req, res, next){
+    try {
+      const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
+      const {id} = dadosValidados;
+
+      const [produto] = await produtosServices.listarRegistroExcluido({id});
+
+      if(!produto){
+        return res.status(404).json({mensagem: 'Produto não encontrado.'})
+      }
+
+      const resultadoExclusao = await produtosServices.reativarRegistro({id});
+      
+      if(resultadoExclusao < 1){
+        return res.status(409).json({mensagem: 'Produto não reativado.'});
+      }
+
+      return res.status(200).json({mensagem: 'Produto reativado com sucesso.'});
     } catch (erro) {
       console.log(erro);
       next(erro);
