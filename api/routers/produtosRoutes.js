@@ -5,6 +5,7 @@ const router = Router();
 
 router
 .get('/produto', verificarToken, ProdutosControlller.listarProdutos)
+.get('/produto/:id', verificarToken, ProdutosControlller.detalharProduto)
 .post('/produto', verificarToken, ProdutosControlller.cadastrarPorduto)
 .put('/produto/:id',  verificarToken, ProdutosControlller.atualizarProduto)
 

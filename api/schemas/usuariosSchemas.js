@@ -31,4 +31,6 @@ const usuarioEditaroSchema = yup.object({
   }),
 });
 
+
+
 export  {usuarioCadastrarSchema, loginSchema, usuarioEditaroSchema};
