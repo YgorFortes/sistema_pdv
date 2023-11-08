@@ -18,8 +18,6 @@ class Services {
   }
 
   async atualizarRegistro(novosDados, parametro){
-    console.log(novosDados);
-    console.log(parametro)
     return db(this.nomeModelo).update(novosDados).where(parametro);
   }
 
