@@ -25,7 +25,15 @@ class Services {
   async excluirRegistro(parametro){
     return db(this.nomeModelo).update({deletedAt: new Date()}).where(parametro);
   }
+
+  async listarRegistroExcluido(parametro){
+    return  db(this.nomeModelo).where(parametro).whereNotNull('deletedAt');
+  }
   
+  async reativarRegistro(parametro){
+    return db(this.nomeModelo).update({deletedAt: null}).where(parametro);
+  }
+
 
 }
 
