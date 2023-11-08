@@ -4,6 +4,9 @@ import verificarToken from "../middlewares/verificarToken.js";
 const router = Router();
 
 router
-.post('/produtos', verificarToken, ProdutosControlller.cadastrarPorduto)
-.put('/produtos/:id',  verificarToken, ProdutosControlller.atualizarProduto)
+.get('/produto', verificarToken, ProdutosControlller.listarProdutos)
+.post('/produto', verificarToken, ProdutosControlller.cadastrarPorduto)
+.put('/produto/:id',  verificarToken, ProdutosControlller.atualizarProduto)
+
+
 export default router;
