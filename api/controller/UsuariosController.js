@@ -2,7 +2,7 @@ import Services from "../services/index.js";
 import criarHashSenha from "../helpers/criarHashSenha.js";
 import verificaSenha from "../helpers/verificaSenha.js";
 import { criarToken,  resgatarPayLoadToken } from "../helpers/token.js";
-import { registroSchema, loginSchema, editarUsuarioSchema } from "../schemas/usuariosSchemas.js";
+import { usuarioCadastrarSchema, loginSchema, usuarioEditaroSchema } from "../schemas/usuariosSchemas.js";
 
 const {UsuariosServices} = Services;
 const usuariosServices = new UsuariosServices;
@@ -12,7 +12,7 @@ class UsuariosController {
   static async criarUsuario(req, res, next){
     
     try {
-      const dadosValidadosCorpo = await registroSchema.validate({body: req.body});
+      const dadosValidadosCorpo = await usuarioCadastrarSchema.validate({body: req.body});
 
       const {nome, email, senha} = dadosValidadosCorpo.body;
     
@@ -86,7 +86,7 @@ class UsuariosController {
   static async atualizarUsuario(req, res, next){
     try {
 
-      const dadosValidadosCorpo  = await editarUsuarioSchema.validate({body: req.body});
+      const dadosValidadosCorpo  = await usuarioEditaroSchema.validate({body: req.body});
 
       const {nome, email, senha} = dadosValidadosCorpo.body;
 

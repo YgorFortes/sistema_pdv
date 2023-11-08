@@ -1,6 +1,6 @@
 import yup from 'yup';
 
-const registroSchema = yup.object({
+const usuarioCadastrarSchema = yup.object({
   body: yup.object({
     nome: yup.string().required('O campo nome é obrigatório.').max(45).trim(),
     email: yup.string().email('O campo precisa ser um email válido.').required('O campo email é obrigatório.').trim(),
@@ -19,7 +19,7 @@ const loginSchema = yup.object({
   }),
 });
 
-const editarUsuarioSchema = yup.object({
+const usuarioEditaroSchema = yup.object({
   body: yup.object({
     nome: yup.string().required('O campo nome é obrigatório.').trim(),
     email: yup.string().email('O campo precisa ser um email válido.').required('O campo email é obrigatório.').trim(),
@@ -31,4 +31,4 @@ const editarUsuarioSchema = yup.object({
   }),
 });
 
-export  {registroSchema, loginSchema, editarUsuarioSchema};
+export  {usuarioCadastrarSchema, loginSchema, usuarioEditaroSchema};
