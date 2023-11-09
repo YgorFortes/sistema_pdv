@@ -28,7 +28,11 @@ class ProdutosControlller {
 
       const [id] = await produtosServices.criarRegistro(produto);
       
-      const novoProduto = await produtosServices.listarRegistroPorParametro({id: id});
+      const [novoProduto] = await produtosServices.listarRegistroPorParametro({id: id});
+
+      if(!novoProduto){
+        return res.status(404).json({mensagem: 'Novo produto não cadastrado.'})
+      }
 
       return res.status(201).json(novoProduto);
     } catch (erro) {

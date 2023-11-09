@@ -5,5 +5,6 @@ const router = Router();
 
 router
 .post('/cliente', verificarToken, ClienteController.cadastrarCliente)
+.put('/cliente/:id',verificarToken, ClienteController.atualizarCliente)
 
 export default router;
