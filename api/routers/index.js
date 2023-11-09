@@ -1,7 +1,8 @@
 import express from 'express';
 import categorias from './categoriasRoutes.js';
 import usuarios from './usuariosRouters.js';
-import produtos from './produtosRoutes.js'
+import produtos from './produtosRoutes.js';
+import clientes from './clientesRoutes.js';
 export default  app =>{
   app.get('/', (req, res)=>{
     res.status(200).send({mensagem: 'Funcionando'})
@@ -12,7 +13,8 @@ export default  app =>{
     express.json(),
     categorias,
     usuarios,
-    produtos
+    produtos,
+    clientes
   )
 }
 
