@@ -7,6 +7,49 @@ const {CategoriasServices} = Services;
 const categoriasServices = new CategoriasServices;
 
 class ProdutosControlller {
+
+  static async listarProdutos(req, res, next){
+    try {
+      const dadosValidados =  await produtosSchema.fields.query.validate(req.query);
+      const {categoria_id} = dadosValidados;
+      
+      if(categoria_id){
+
+        const [categoria] = await categoriasServices.listarRegistroPorParametro({id: categoria_id});
+
+        if(!categoria){
+          return res.status(404).json({mensagem: 'Categoria não encontrada.'});
+        }
+ 
+        const listaProdutosPorCategoria = await produtosServices.listarRegistroPorParametro({categoria_id});
+        return res.status(200).json(listaProdutosPorCategoria);
+      }
+
+      const listaProdutos = await produtosServices.listarRegistros();
+      return res.status(200).json(listaProdutos);
+      
+    } catch (erro) {
+      next(erro);
+    }
+  }
+
+  static async detalharProduto(req, res, next){
+    try {
+      const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
+      const {id} = dadosValidados;
+
+      const [produto] = await produtosServices.listarRegistroPorParametro({id});
+
+      if(!produto){
+        return res.status(404).json({mensagem: 'Produto não encontrado.'})
+      }
+      
+      return res.status(200).json(produto);
+    } catch (erro) {
+      next(erro);
+    }
+  }
+  
   static async cadastrarPorduto(req, res, next ){
     try {
       const dadosValidadosCorpo = await produtosSchema.fields.body.validate(req.body);
@@ -87,47 +130,6 @@ class ProdutosControlller {
     }
   }
 
-  static async listarProdutos(req, res, next){
-    try {
-      const dadosValidados =  await produtosSchema.fields.query.validate(req.query);
-      const {categoria_id} = dadosValidados;
-      
-      if(categoria_id){
-
-        const [categoria] = await categoriasServices.listarRegistroPorParametro({id: categoria_id});
-
-        if(!categoria){
-          return res.status(404).json({mensagem: 'Categoria não encontrada.'});
-        }
- 
-        const listaProdutosPorCategoria = await produtosServices.listarRegistroPorParametro({categoria_id});
-        return res.status(200).json(listaProdutosPorCategoria);
-      }
-
-      const listaProdutos = await produtosServices.listarRegistros();
-      return res.status(200).json(listaProdutos);
-      
-    } catch (erro) {
-      next(erro);
-    }
-  }
-
-  static async detalharProduto(req, res, next){
-    try {
-      const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
-      const {id} = dadosValidados;
-
-      const [produto] = await produtosServices.listarRegistroPorParametro({id});
-
-      if(!produto){
-        return res.status(404).json({mensagem: 'Produto não encontrado.'})
-      }
-      
-      return res.status(200).json(produto);
-    } catch (erro) {
-      next(erro);
-    }
-  }
 
   static async deletarProduto(req, res, next){
     try {

@@ -6,6 +6,31 @@ const clienteServices = new ClientesServices;
 
 class ClienteController {
 
+  static async listarClientes(req, res , next){
+    try {
+      const clientes = await clienteServices.listarRegistros();
+      return res.status(200).json(clientes);
+    } catch (erro) {
+      next(erro);
+    }
+  }
+
+  static async listarClientePorId(req, res, next){
+    try {
+      const dadosValidados = await clienteSchema.fields.params.validate(req.params);
+      const {id} = dadosValidados;
+
+      const [cliente] = await clienteServices.listarRegistroPorParametro({id});
+
+      if(!cliente){
+        return res.status(404).json({mensagem: 'Cliente não encontrado.'});
+      }
+
+      return res.status(200).json(cliente);
+    } catch (erro) {
+      next(erro);
+    }
+  }
 
   static async cadastrarCliente(req, res ,next){
    try {
@@ -74,6 +99,8 @@ class ClienteController {
       next(erro);
     }
   }
+
+ 
 }
 
 export default ClienteController;
