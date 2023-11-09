@@ -6,7 +6,7 @@ class UsuariosServices extends Services{
   }
 
   async verificarEmailUnico(parametro, idUsuario){
-    return db(this.nomeModelo).where(parametro).andWhereNot({id: idUsuario});
+    return db(this.nomeModelo).where(parametro).andWhereNot({id: idUsuario}).whereNull('deletedAt');
   }
 }
 
