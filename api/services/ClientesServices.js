@@ -5,6 +5,14 @@ class ClientesServices extends Services{
   constructor(){
     super('clientes');
   }
+
+  async verificaUnidadeEmailCpf(email, cpf){
+    return db(this.nomeModelo).where((function (){
+      this.where({email: email})
+      .orWhere({cpf: cpf})
+    }))
+    .whereNull('deletedAt')
+  }
 }
 
 export default ClientesServices;

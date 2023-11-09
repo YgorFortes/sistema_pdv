@@ -1,12 +1,10 @@
 import Yup from 'yup'
 function manipulacaoErros (erro ,req, res, next){
-  if(erro instanceof Error){
+  if (erro instanceof Yup.ValidationError){
+    return res.status(400).json({mensagem: erro.message})
+  }else  if(erro instanceof Error){
     console.log(erro)
     return res.status(500).json({mensagem: 'Servidor com problemas! Volte mais tarde.'});
-  }else if (erro instanceof Yup.ValidationError){
-    return res.status(400).json({mensagem: erro.message})
-  }else{
-    return res.status(400).json(erro)
   }
 }
 
@@ -16,5 +14,4 @@ function manipulacaoErro404(req, res, next){
 
 
 
-
-export {manipulacaoErros, manipulacaoErro404, }
+export {manipulacaoErros, manipulacaoErro404 }
