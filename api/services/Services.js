@@ -13,7 +13,6 @@ class Services {
     return db(this.nomeModelo).where(parametro).whereNull('deletedAt');
   }
 
-
   async criarRegistro(dados){
     return db(this.nomeModelo).insert(dados);
   }
