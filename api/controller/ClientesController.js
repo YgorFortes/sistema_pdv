@@ -17,6 +17,7 @@ class ClienteController {
 
   static async listarClientePorId(req, res, next){
     try {
+      
       const dadosValidados = await clienteSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
@@ -39,7 +40,7 @@ class ClienteController {
     const {nome, email, cpf, cep, rua, numero, bairro, cidade, estado} = dadosValidados;
 
     const emailOuCpfCadastrado = await clienteServices.verificaUnidadeEmailCpf(email, cpf);
-    
+
     if(emailOuCpfCadastrado.length){
       return res.status(409).json({mensagem: 'Email, ou cpf já cadastrado'});
     }
@@ -50,7 +51,7 @@ class ClienteController {
       bairro, cidade, estado
     }
 
-    const id = await clienteServices.criarRegistro(cliente);
+    const [id] = await clienteServices.criarRegistro(cliente);
     
     const [novoCliente] = await clienteServices.listarRegistroPorParametro({id: id});
 

@@ -43,7 +43,7 @@ class UsuariosController {
       const dadosValidosCorpo = await loginSchema.validate({body: req.body});
       
       const {email, senha} = dadosValidosCorpo.body;
-
+   
       const [usuario] = await usuariosServices.listarRegistroPorParametro({email});
 
       if(!usuario){
@@ -51,7 +51,7 @@ class UsuariosController {
       }
 
       const senhaValida = verificaSenha(senha, usuario);
-
+  
       if(!senhaValida){
         return res.status(401).json({mensagem: 'Senha inválida'});
       }
@@ -68,9 +68,9 @@ class UsuariosController {
     
     try {
       const idUsuario = await resgatarPayLoadToken(req);
-      console.log(idUsuario)
-      const [usuario] = await usuariosServices.listarRegistroPorParametro({id: idUsuario});
 
+      const [usuario] = await usuariosServices.listarRegistroPorParametro({id: idUsuario});
+      
       const usuarioSemSenha = {
         nome: usuario.nome,
         email: usuario.email
@@ -78,7 +78,7 @@ class UsuariosController {
 
       return res.status(200).json({usuario: usuarioSemSenha})
     } catch (erro) {
-      console.log(erro);
+      console.log(erro)
       next(erro);
     }
   }
@@ -113,7 +113,7 @@ class UsuariosController {
 
       return res.status(200).json({mensagem: 'Usuário atualizado com sucesso'});
     } catch (erro) {
-      console.log(erro);
+  
       next(erro);
     }
   }

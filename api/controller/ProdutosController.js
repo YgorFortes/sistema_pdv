@@ -79,7 +79,6 @@ class ProdutosControlller {
 
       return res.status(201).json(novoProduto);
     } catch (erro) {
-      console.log(erro)
       next(erro);
     }
   }
@@ -150,7 +149,6 @@ class ProdutosControlller {
 
       return res.status(200).json({mensagem: 'Produto excluido com sucesso.'});
     } catch (erro) {
-      console.log(erro);
       next(erro);
     }
     
@@ -175,7 +173,6 @@ class ProdutosControlller {
 
       return res.status(200).json({mensagem: 'Produto reativado com sucesso.'});
     } catch (erro) {
-      console.log(erro);
       next(erro);
     }
     
