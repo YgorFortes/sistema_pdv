@@ -12,20 +12,8 @@ class ProdutosControlller {
     try {
       const dadosValidados =  await produtosSchema.fields.query.validate(req.query);
       const {categoria_id} = dadosValidados;
-      
-      if(categoria_id){
-
-        const [categoria] = await categoriasServices.listarRegistroPorParametro({id: categoria_id});
-
-        if(!categoria){
-          return res.status(404).json({mensagem: 'Categoria não encontrada.'});
-        }
- 
-        const listaProdutosPorCategoria = await produtosServices.listarRegistroPorParametro({categoria_id});
-        return res.status(200).json(listaProdutosPorCategoria);
-      }
-
-      const listaProdutos = await produtosServices.listarRegistros();
+    
+      const listaProdutos = await produtosServices.listarLivros(categoria_id);
       return res.status(200).json(listaProdutos);
       
     } catch (erro) {
@@ -38,45 +26,27 @@ class ProdutosControlller {
       const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
-      const [produto] = await produtosServices.listarRegistroPorParametro({id});
+      const resultado = await produtosServices.listarLivroPorId({id})
 
-      if(!produto){
-        return res.status(404).json({mensagem: 'Produto não encontrado.'})
-      }
-      
-      return res.status(200).json(produto);
+    
+    
+      return res.status(200).json(resultado);
     } catch (erro) {
+      console.log(erro)
       next(erro);
     }
   }
   
   static async cadastrarPorduto(req, res, next ){
     try {
-      const dadosValidadosCorpo = await produtosSchema.fields.body.validate(req.body);
+      const produto = await produtosSchema.fields.body.validate(req.body);
 
-      const {descricao, categoria_id, valor, quantidade_estoque} = dadosValidadosCorpo;
-
-      const [categoria] = await categoriasServices.listarRegistroPorParametro({id: categoria_id});
-      
-      if(!categoria){
-        return res.status(404).json({mensagem: 'Nenhum categoria encontrada.'});
-      }
-
-      const produto = {
-        descricao: descricao,
-        categoria_id: categoria_id,
-        valor: valor,
-        quantidade_estoque: quantidade_estoque
-      }
-
-      const [id] = await produtosServices.criarRegistro(produto);
-      
-      const [novoProduto] = await produtosServices.listarRegistroPorParametro({id: id});
+      const novoProduto = await produtosServices.cadastrarProduto(produto);
 
       if(!novoProduto){
-        return res.status(404).json({mensagem: 'Novo produto não cadastrado.'})
+        return res.status(404).json({mensagem: 'Categoria não existe'})
       }
-
+  
       return res.status(201).json(novoProduto);
     } catch (erro) {
       next(erro);
@@ -86,44 +56,25 @@ class ProdutosControlller {
   static async atualizarProduto(req, res, next){
 
     try {
-      const valoresProdutoValidado = await produtosSchema.validate(
+      const produto = await produtosSchema.validate(
         {
           body: req.body, 
           params: req.params
         }
       );
-
-      const {id} = valoresProdutoValidado.params;
-
-      const {descricao, quantidade_estoque, valor, categoria_id } = valoresProdutoValidado.body;
       
-      const [produto] = await produtosServices.listarRegistroPorParametro({id}); 
-      
-      if(!produto){
-        return res.status(404).json({mensagem: 'Produto não encontrado.'});
+      const novaInfoProduto = {
+        ...produto.body
       }
 
-      const [categoria] = await categoriasServices.listarRegistroPorParametro({id: categoria_id});
+      const {id} = produto.params;
 
-      if(!categoria){
-        return res.status(404).json({mensagem: 'Categoria não encontrada.'});
+      const resultado = await produtosServices.atualizarProduto(id, novaInfoProduto);
+      if(!resultado){
+        return res.status(404).json({ mensagem: 'Produto, ou categoria não existe.'})
       }
 
-      const novasInforProduto = {
-        descricao: descricao,
-        quantidade_estoque: quantidade_estoque,
-        valor: valor,
-        categoria_id: categoria_id
-      }
-  
-
-      const resultadoAtualizacao = await produtosServices.atualizarRegistro(novasInforProduto, {id});
-      if(resultadoAtualizacao < 1){
-        return res.status(409).json({mensagem: 'Produto não atualizado.'});
-      }
-        
-
-      return res.status(200).json({mensagem: 'Produto atualizado com sucesso'});
+      return res.status(200).json(resultado);
     } catch (erro) {
       next(erro);
     }

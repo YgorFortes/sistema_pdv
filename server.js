@@ -9,9 +9,9 @@ routers(app)
 
 app.use(manipulacaoErros, manipulacaoErro404);
 
-// app.listen(port, ()=>{
-//   console.log(`Servidor funcionando na porta http://localhost:${port}/`)
-// })
+app.listen(port, ()=>{
+  console.log(`Servidor funcionando na porta http://localhost:${port}/`)
+})
 
 export default app;
 
