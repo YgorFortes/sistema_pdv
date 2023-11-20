@@ -23,6 +23,10 @@ class Produto {
   static async pegar(){
     return db('produtos').whereNull('deletedAt');
   }
+  
+  static async pegarDesativado(id){
+    return await db('produtos').where(id);
+  }
 
   static async pegarPeloId(id){
     return db('produtos').where(id).whereNull('deletedAt');
@@ -34,14 +38,19 @@ class Produto {
     return new Produto(produtoPegado);
   }
 
-  async atualizaro(id){
+  async atualizar(id){
     await db('produtos').where(id).update({...this, updated_at: new Date()});
     return db('produtos').where(id);
 
   }
 
-  async excluir(id){
+  static async excluir(id){
     return db('produtos').update({deletedAt: new Date()}).where(id);
+  }
+
+
+  static async reativar(id){
+    return db('produtos').update({deletedAt: null}).where(id);
   }
 
   async salvar(){
@@ -52,6 +61,9 @@ class Produto {
     const resultado = await this.criar();
     return resultado;
   }
+
 }
+
+
 
 export default Produto;
