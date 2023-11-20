@@ -86,19 +86,13 @@ class ProdutosControlller {
       const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
-      const [produto] = await produtosServices.listarRegistroPorParametro({id});
+      const resultado = await produtosServices.excluirProduto(id);
 
-      if(!produto){
-        return res.status(404).json({mensagem: 'Produto não encontrado.'})
+      if(!resultado){
+        return res.status(404).json({mensagem: 'Produto não encontrado'})
       }
 
-      const resultadoExclusao = await produtosServices.excluirRegistro({id});
-      
-      if(resultadoExclusao < 1){
-        return res.status(409).json({mensagem: 'Produto não excluido.'});
-      }
-
-      return res.status(200).json({mensagem: 'Produto excluido com sucesso.'});
+      return res.status(200).json({mensagem: resultado});
     } catch (erro) {
       next(erro);
     }
@@ -110,18 +104,12 @@ class ProdutosControlller {
       const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
-      const [produto] = await produtosServices.listarRegistroExcluido({id});
+      const resultado = await produtosServices.ativarProduto(id);
 
-      if(!produto){
-        return res.status(404).json({mensagem: 'Produto não encontrado.'})
+      if(!resultado){
+        return res.status(404).json({mensagem: 'Produto não encontrado'});
       }
-
-      const resultadoExclusao = await produtosServices.reativarRegistro({id});
-      
-      if(resultadoExclusao < 1){
-        return res.status(409).json({mensagem: 'Produto não reativado.'});
-      }
-
+  
       return res.status(200).json({mensagem: 'Produto reativado com sucesso.'});
     } catch (erro) {
       next(erro);

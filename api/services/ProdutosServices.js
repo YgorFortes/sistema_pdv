@@ -1,6 +1,5 @@
 import Produto from "../models/Produto.js";
 import Categoria from "../models/Categoria.js";
-import { object } from "yup";
 class ProdutosServices {
 
   async listarLivros(categoria_id){
@@ -12,9 +11,8 @@ class ProdutosServices {
           const resultado = await Produto.pegarPeloId({categoria_id});
           return resultado;
         }
-
+      
       }else{
-        console.log('Não entrou')
         const resultado = await Produto.pegar();
         return resultado;
       }
@@ -66,6 +64,28 @@ class ProdutosServices {
     }
   }
 
+  async excluirProduto(id){
+    try {
+      const [produtoExiste] = await Produto.pegarPeloId({id});
+      if(produtoExiste){
+        await Produto.excluir({id});
+        return 'Produto excluido com sucesso.';
+      }
+      return undefined;
+    } catch (erro) {
+      throw new Error(erro.message);
+    }
+  }
+
+  async ativarProduto(id){
+    const [produtoDesativado] = await Produto.pegarDesativado({id});
+    if(produtoDesativado){
+      await Produto.reativar({id});
+      return {mensagem: 'Produto ativado'};
+    }
+
+    return undefined;
+  }
 }
 
 export default ProdutosServices;
