@@ -39,9 +39,8 @@ class Produto {
   }
 
   async atualizar(id){
-    await db('produtos').where(id).update({...this, updated_at: new Date()});
-    return db('produtos').where(id);
-
+    await db('produtos').where('id', id).update({...this, updated_at: new Date()});
+    return db('produtos').where('id', id);
   }
 
   static async excluir(id){

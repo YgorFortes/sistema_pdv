@@ -1,8 +1,9 @@
 import Produto from "../models/Produto.js";
 import Categoria from "../models/Categoria.js";
+import ErroCustomizado from "../erros/ErroCustomizado.js";
 class ProdutosServices {
 
-  async listarLivros(categoria_id){
+  async listarProdutos(categoria_id){
     try {
       if(categoria_id){
         const categoriaExiste = await Categoria.pegarPorId({id: categoria_id});
@@ -17,18 +18,16 @@ class ProdutosServices {
         return resultado;
       }
     } catch (erro) {
-      throw new Error(erro.message);
+      throw erro;
     }
   }
 
-  async listarLivroPorId(id){
+  async listarProdutoPorId(id){
     try {
       const resultado = await Produto.pegarPeloId(id);
       return resultado;
-
     } catch (erro) {
-      console.log(erro)
-      throw new Error(erro.message);
+      throw erro;
     } 
   }
 
@@ -36,55 +35,71 @@ class ProdutosServices {
     try {
       const categoriaExiste = await Categoria.pegarPorId({id: produtoCorpo.categoria_id});
      
-      if(categoriaExiste){
-        const produto = new Produto(produtoCorpo);
-        const resposta = await produto.salvar();
-        return {mensagem: 'Produto criado', resposta}
+      if(!categoriaExiste){
+        throw new ErroCustomizado('Categoria não existe', 404);
       }
+      const produto = new Produto(produtoCorpo);
+      const resposta = await produto.salvar();
+      return {mensagem: 'Produto criado', resposta}
+      
     } catch (erro) {
-      console.log(erro)
-      throw new Error(erro.message);
+      throw erro;
     }
   }
 
   async atualizarProduto(id, produtoCorpo){
     try {
       const {categoria_id} = produtoCorpo;
-      const [produtoAtual] = await Produto.pegar({id});
-      if(produtoAtual){
-        const categoriaExiste = await Categoria.pegarPorId({id: categoria_id});
-        if(categoriaExiste){
-          const produtoAtual = new Produto({...produtoCorpo});
-          const resposta = await produtoAtual.salvar(produtoAtual);
-          return {mensagem: 'Produto atualizado', resposta};
-        } 
+      const [produtoAtual] = await Produto.pegarPeloId({id});
+      const categoriaExiste = await Categoria.pegarPorId({id: categoria_id});
+
+      if(!produtoAtual){
+        throw new ErroCustomizado('Produto não existe', 404);
       }
+
+      if(!categoriaExiste){
+        throw new ErroCustomizado('Categoria não existe', 404);
+      } 
+
+      const produtoNovo = new Produto({id: produtoAtual.id,...produtoCorpo});
+    
+      const resposta = await produtoNovo.salvar(produtoNovo);
+      return resposta;
+ 
     } catch (erro) {
-      throw new Error(erro.message);
+      console.log(erro)
+      throw erro;
     }
   }
 
   async excluirProduto(id){
     try {
       const [produtoExiste] = await Produto.pegarPeloId({id});
-      if(produtoExiste){
-        await Produto.excluir({id});
-        return 'Produto excluido com sucesso.';
+      if(!produtoExiste){
+        throw new ErroCustomizado('Produto não encontrado', 404);
       }
-      return undefined;
+
+      await Produto.excluir({id});
+      return 'Produto excluido com sucesso.';
+    
     } catch (erro) {
-      throw new Error(erro.message);
+      throw erro;
     }
   }
 
   async ativarProduto(id){
-    const [produtoDesativado] = await Produto.pegarDesativado({id});
-    if(produtoDesativado){
+    try {
+      const [produtoDesativado] = await Produto.pegarDesativado({id});
+      if(!produtoDesativado){
+        throw new ErroCustomizado('Produto não encontrado', 404);
+      }
+      
       await Produto.reativar({id});
       return {mensagem: 'Produto ativado'};
+    } catch (erro) {
+      throw erro;
     }
-
-    return undefined;
+    
   }
 }
 

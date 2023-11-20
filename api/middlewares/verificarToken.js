@@ -5,13 +5,16 @@ function verificarToken(req, res , next){
 
   if(!token){
     return res.status(403).json({mensagem: 'Acesso negado.'});
+    console.log('dfskkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
   }
 
   try {
     const secret = process.env.SECRET;
     jwtToken.verify(token, secret);
     next();
+    
   } catch (erro) {
+    console.log('dfskkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
     return res.status(401).json({mensagem: 'Token inválido.'});
   }
 }
