@@ -6,7 +6,7 @@ const router = Router();
 router
 .post('/usuario', UsuariosController.criarUsuario)
 .post('/login',  UsuariosController.login)
-.get('/usuario', UsuariosController.detalharUsuario)
+.get('/usuario', verificarToken, UsuariosController.detalharUsuario)
 .put('/usuario', verificarToken,  UsuariosController.atualizarUsuario )
 
 export default router;

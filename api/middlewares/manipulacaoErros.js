@@ -1,10 +1,10 @@
 import Yup from 'yup'
+import ErroCustomizado from '../erros/ErroCustomizado.js';
 function manipulacaoErros (erro ,req, res, next){
   if (erro instanceof Yup.ValidationError){
     return res.status(400).json({mensagem: erro.message})
-  }else  if(erro instanceof Error){
-    console.log(erro)
-    return res.status(500).json({mensagem: 'Servidor com problemas! Volte mais tarde.'});
+  }else  if(erro instanceof ErroCustomizado){
+    return res.status(erro.statusCode || 500 ).json({mensagem: erro.message});
   }
 }
 
