@@ -5,6 +5,8 @@ function manipulacaoErros (erro ,req, res, next){
     return res.status(400).json({mensagem: erro.message})
   }else  if(erro instanceof ErroCustomizado){
     return res.status(erro.statusCode || 500 ).json({mensagem: erro.message});
+  }else if (erro instanceof Error){
+    return res.status(500).json({mensagem: 'Servidor com problemas! Volte mais tarde.'});
   }
 }
 

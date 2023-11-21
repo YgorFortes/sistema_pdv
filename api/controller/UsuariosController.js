@@ -51,8 +51,6 @@ class UsuariosController {
 
       const resultado = await usuariosServices.detalharUsuario(idUsuario);
 
-  
-
       return res.status(200).json({usuario: resultado})
     } catch (erro) {
       console.log(erro)

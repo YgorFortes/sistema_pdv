@@ -8,8 +8,8 @@ class ClienteController {
 
   static async listarClientes(req, res , next){
     try {
-      const clientes = await clienteServices.listarRegistros();
-      return res.status(200).json(clientes);
+      const resultado = await clienteServices.listarClientes();
+      return res.status(200).json(resultado);
     } catch (erro) {
       next(erro);
     }
@@ -21,13 +21,9 @@ class ClienteController {
       const dadosValidados = await clienteSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
-      const [cliente] = await clienteServices.listarRegistroPorParametro({id});
+      const resultado = await clienteServices.listarClientePorId(id);
 
-      if(!cliente){
-        return res.status(404).json({mensagem: 'Cliente não encontrado.'});
-      }
-
-      return res.status(200).json(cliente);
+      return res.status(200).json(resultado);
     } catch (erro) {
       next(erro);
     }
@@ -35,31 +31,11 @@ class ClienteController {
 
   static async cadastrarCliente(req, res ,next){
    try {
-    const dadosValidados = await clienteSchema.fields.body.validate(req.body);
- 
-    const {nome, email, cpf, cep, rua, numero, bairro, cidade, estado} = dadosValidados;
+    const cliente = await clienteSchema.fields.body.validate(req.body);
 
-    const emailOuCpfCadastrado = await clienteServices.verificaUnidadeEmailCpf(email, cpf);
+    const resultado = await clienteServices.criarCliente(cliente);
 
-    if(emailOuCpfCadastrado.length){
-      return res.status(409).json({mensagem: 'Email, ou cpf já cadastrado'});
-    }
-
-    const cliente = {
-      nome, email, cpf, 
-      cep, rua, numero,
-      bairro, cidade, estado
-    }
-
-    const [id] = await clienteServices.criarRegistro(cliente);
-    
-    const [novoCliente] = await clienteServices.listarRegistroPorParametro({id: id});
-
-    if(!novoCliente){
-      return res.status(404).json({mensagem: 'Novo cliente não cadastrado.'});
-    }
-
-    return res.status(201).json(novoCliente);
+    return res.status(201).json({mensagem: 'Cliente cadastrado', resultado});
    } catch (erro) {
     next(erro);
    }
@@ -75,27 +51,12 @@ class ClienteController {
       );
       
       const {id} = dadosValidados.params;
-      const {nome, email, cpf, cep, rua, numero, bairro, cidade, estado} = dadosValidados.body;
- 
-      const emailOuCpfUnico = await clienteServices.veirificaEmailCpfUnico(email, cpf, id);
+      const novaInfoCliente = dadosValidados.body;
       
-      if(emailOuCpfUnico.length){
-        return res.status(409).json({mensagem: 'Email, ou cpf já por outro cliente'});
-      }
+      const resultado = await clienteServices.atualizarCliente(id, novaInfoCliente);
 
-      const novaInfoCliente = {
-        nome, email, cpf, 
-        cep, rua, numero,
-        bairro, cidade, estado
-      }
 
-      const resultadoAtualizacao = await clienteServices.atualizarRegistro(novaInfoCliente, {id});
-
-      if(resultadoAtualizacao <1){
-        return res.status(409).json({mensagem: 'Cliente não atualizado.'});
-      }
-
-      return res.status(200).json({mensagem: 'Cliente atualizado com sucesso.'});
+      return res.status(200).json({mensagem: 'Cliente atualizado com sucesso.', resultado});
     } catch (erro) {
       next(erro);
     }

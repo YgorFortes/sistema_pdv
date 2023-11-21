@@ -5,7 +5,6 @@ function verificarToken(req, res , next){
 
   if(!token){
     return res.status(403).json({mensagem: 'Acesso negado.'});
-    console.log('dfskkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
   }
 
   try {
@@ -14,7 +13,6 @@ function verificarToken(req, res , next){
     next();
     
   } catch (erro) {
-    console.log('dfskkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
     return res.status(401).json({mensagem: 'Token inválido.'});
   }
 }
