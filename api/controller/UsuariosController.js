@@ -16,11 +16,9 @@ class UsuariosController {
 
       const resultado = await usuariosServices.criarUsuario(usuario);
 
-      if(!resultado){
-        return res.status(409).json({mensagem: 'Email já cadastrado'});
-      }
+    
 
-      return res.status(201).json({mensagem: 'Usuário cadastrado com sucesso'});
+      return res.status(201).json(resultado);
     } catch (erro) {
       next(erro)
     }
@@ -31,14 +29,11 @@ class UsuariosController {
 
       const usuario = await loginSchema.fields.body.validate(req.body);
 
-      const {resultado, token} = await usuariosServices.loginUsuario(usuario);
+      const resultado = await usuariosServices.loginUsuario(usuario);
 
     
-       if(resultado === 'Senha inválida'){
-        return res.status(401).json({mensagem: resultado})
-      }
 
-      return res.status(200).json({mensagem: 'Usuário logado com sucesso', token:  token})
+      return res.status(200).json(resultado)
     } catch (erro) {
       next(erro);
     }
@@ -51,7 +46,7 @@ class UsuariosController {
 
       const resultado = await usuariosServices.detalharUsuario(idUsuario);
 
-      return res.status(200).json({usuario: resultado})
+      return res.status(200).json(resultado)
     } catch (erro) {
       console.log(erro)
       next(erro);
@@ -64,11 +59,23 @@ class UsuariosController {
       const usuario  = await usuarioEditaroSchema.fields.body.validate(req.body);
       const idUsuario = await resgatarPayLoadToken(req);
       
-      const resultado = await usuariosServices.atualizarUsuario(usuario, idUsuario)
+      const resultado = await usuariosServices.atualizarUsuario(usuario, idUsuario);
    
-      return res.status(200).json({mensagem: 'Usuário atualizado com sucesso', resultado});
+      return res.status(200).json(resultado);
     } catch (erro) {
   
+      next(erro);
+    }
+  }
+
+  static async excluirUsuario(req, res, next){
+    try {
+      const idUsuario = await resgatarPayLoadToken(req);
+
+      const resultado = await usuariosServices.excluirUsuario(idUsuario);
+
+      return res.status(200).json(resultado);
+    } catch (erro) {
       next(erro);
     }
   }

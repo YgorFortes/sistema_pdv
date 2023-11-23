@@ -19,6 +19,14 @@ class Usuario {
     this.deletedAt = null || deletedAt;
   }
 
+  get info(){
+    return {
+      id: this.id,
+      nome: this.nome,
+      email: this.email,
+    };
+  }
+
   static async pegarPeloId(id){
     return db('usuarios').where(id).whereNull('deletedAt');
   }
@@ -44,11 +52,15 @@ class Usuario {
 
   async salvar(){
     if(this.id){
-      const resultado = await this.atualizar(this.id);
+      const [resultado] = await this.atualizar(this.id);
       return resultado;
     }
     const resultado = await this.criar();
     return resultado;
+  }
+
+  static async excluir(id){
+    return db('usuarios').delete().where(id);
   }
 }
 

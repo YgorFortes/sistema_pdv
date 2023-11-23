@@ -8,6 +8,13 @@ class Categoria{
     this.descricao = descricao
   }
 
+  get info(){
+    return {
+      id: this.id,
+      descricao: this.descricao,
+    };
+  }
+
   static async pegar(){
     return db('categorias').whereNull('deletedAt');
   }

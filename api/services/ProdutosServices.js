@@ -40,7 +40,7 @@ class ProdutosServices {
       }
       const produto = new Produto(produtoCorpo);
       const resposta = await produto.salvar();
-      return {mensagem: 'Produto criado', resposta}
+      return resposta;
       
     } catch (erro) {
       throw erro;
@@ -95,7 +95,7 @@ class ProdutosServices {
       }
       
       await Produto.reativar({id});
-      return {mensagem: 'Produto ativado'};
+      return  'Produto ativado';
     } catch (erro) {
       throw erro;
     }
