@@ -20,6 +20,16 @@ class Produto {
     this.deletedAt = null || deletedAt;
   }
 
+  get info(){
+    return {
+      id: this.id,
+      descricao: this.descricao,
+      quantidade_estoque: this.quantidade_estoque,
+      valor: this.valor,
+      categoria_id: this.categoria_id,
+    };
+  }
+
   static async pegar(){
     return db('produtos').whereNull('deletedAt');
   }
@@ -54,7 +64,7 @@ class Produto {
 
   async salvar(){
     if(this.id){
-      const resultado = await this.atualizar(this.id);
+      const [resultado] = await this.atualizar(this.id);
       return resultado;
     }
     const resultado = await this.criar();

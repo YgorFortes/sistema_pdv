@@ -1,7 +1,7 @@
 import Usuario from '../models/Usuario.js';
 import criarHashSenha from "../helpers/criarHashSenha.js";
 import verificaSenha from '../helpers/verificaSenha.js';
-import { criarToken,  resgatarPayLoadToken } from "../helpers/token.js";
+import { criarToken } from "../helpers/token.js";
 import ErroCustomizado from '../erros/ErroCustomizado.js';
 class UsuariosServices {
  
@@ -14,8 +14,9 @@ class UsuariosServices {
       if(!emailExiste){
         const usuario = new Usuario(usuarioCorpo);
         usuario.senha = criarHashSenha(senha);
-        await usuario.salvar();
-        return 'Usuario cadastrado com sucesso.';
+        const novoUsuario = await usuario.salvar();
+
+        return {mensagem: 'Usuário cadastrado com sucesso.',  usuario: novoUsuario.info};
       }else{
         throw new ErroCustomizado('Email já cadastrado', 409);
       }
@@ -38,7 +39,7 @@ class UsuariosServices {
       }
 
       const token = criarToken(usuario);
-      return {resultado: 'Usuário logado com sucesso', token};
+      return {mensagem: 'Usuário logado com sucesso', token};
     
     } catch (erro) {
       throw erro;
@@ -46,20 +47,22 @@ class UsuariosServices {
   }
 
   async atualizarUsuario(usuarioCorpo, idUsuario){
+    const {email, senha} =  usuarioCorpo;
     try {
-      console.log(usuarioCorpo, idUsuario)
-      const emailUnico = await Usuario.verificarEmailUnico({email: usuarioCorpo.email}, {id: idUsuario});
-      console.log(emailUnico)
+      const emailUnico = await Usuario.verificarEmailUnico({email}, {id: idUsuario});
       if(emailUnico.length){
         throw new ErroCustomizado('Email já cadastrado em outra conta.', 409);
       }
 
       const [usuarioAtual] = await Usuario.pegarPeloId({id: idUsuario});
-      console.log(usuarioAtual)
+
       const usuarioNovo = new Usuario({id: usuarioAtual.id, ...usuarioCorpo});
+
+      usuarioNovo.senha = criarHashSenha(senha);
       
-      const resposta = await usuarioNovo.salvar(usuarioNovo);
-      return resposta;
+      await usuarioNovo.salvar(usuarioNovo);
+   
+      return {mensagem: 'Usuário atualizado com sucesso.', usuario: usuarioNovo.info};
 
     } catch (erro) {
       throw erro;
@@ -67,23 +70,54 @@ class UsuariosServices {
   }
 
   async detalharUsuario(id){
+    
     try {
-      const [usuario] = await Usuario.pegarPeloId({id});
+      const [usuarioEncontrado] = await Usuario.pegarPeloId({id});
 
-      const usuarioSemSenha = {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email,
-        created_at: usuario.created_at,
-        updated_at: usuario.deletedAt,
-        deletedAt: null
+      if(!usuarioEncontrado){
+        throw new ErroCustomizado('Usuário não encontrado.', 404);
       }
+
+      const usuarioDetalhado = new Usuario(usuarioEncontrado)
      
-      return usuarioSemSenha;
+      return usuarioDetalhado.info;
     } catch (erro) {
       throw erro;
     }
   }
+
+  async excluirUsuario(id){
+    try {
+      const [usuario] = await Usuario.pegarPeloId({id});
+  
+
+      if(!usuario){
+        throw new ErroCustomizado('Usuario não encontrado.', 404);
+      }
+
+      await Usuario.excluir({id});
+      return {mensagem: 'Usuário excluido com sucesso.'};
+    
+    } catch (erro) {
+      throw erro;
+    } 
+  }
+
+  async detalharUsuarioComSenha(id){
+    try {
+      const [usuario] = await Usuario.pegarPeloId({id});
+      
+      if(!usuario){
+        throw new ErroCustomizado('Usuário não encontrado.', 404);
+      }
+
+      return usuario;
+    } catch (erro) {
+      throw erro;
+    }
+  }
+
+
 }
 
 

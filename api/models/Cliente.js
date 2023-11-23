@@ -17,7 +17,7 @@ class Cliente {
     deletedAt,
   }){
     this.id = null || id;
-    this.nome = nome,
+    this.nome = nome;
     this.email = email;
     this.cpf = cpf;
     this.cep = null || cep;
@@ -30,6 +30,22 @@ class Cliente {
     this.updated_at = updated_at || new Date();
     this.deletedAt = null || deletedAt;
   }
+
+  get info(){
+    return {
+      id: this.id,
+      nome: this.nome,
+      email: this.email,
+      cpf: this.cpf,
+      cep: this.cep, 
+      rua: this.rua , 
+      numero: this.numero,
+      bairro: this.bairro,
+      cidade: this.cidade,
+      estado: this.estado,
+    };
+  }
+
 
   static async pegar(){
     return db('clientes').whereNull('deletedAt');
@@ -53,7 +69,7 @@ class Cliente {
 
   async salvar(){
     if(this.id){
-      const resultado = await this.atualizar(this.id);
+      const [resultado] = await this.atualizar(this.id);
       return resultado;
     }
     const resultado = await this.criar();

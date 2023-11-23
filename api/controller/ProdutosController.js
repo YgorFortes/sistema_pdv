@@ -38,8 +38,8 @@ class ProdutosControlller {
     try {
       const produto = await produtosSchema.fields.body.validate(req.body);
 
-      const novoProduto = await produtosServices.cadastrarProduto(produto);
-      return res.status(201).json(novoProduto);
+      const resultado = await produtosServices.cadastrarProduto(produto);
+      return res.status(201).json({mensagem: 'Produto criado', resultado});
     } catch (erro) {
       next(erro);
     }
@@ -48,18 +48,16 @@ class ProdutosControlller {
   static async atualizarProduto(req, res, next){
 
     try {
-      const produto = await produtosSchema.validate(
+      const dadosValidados = await produtosSchema.validate(
         {
           body: req.body, 
           params: req.params
         }
       );
       
-      const novaInfoProduto = {
-        ...produto.body
-      }
+      const novaInfoProduto = dadosValidados.body;
 
-      const {id} = produto.params;
+      const {id} = dadosValidados.params;
 
       const resultado = await produtosServices.atualizarProduto(id, novaInfoProduto);
   
@@ -91,7 +89,7 @@ class ProdutosControlller {
 
       const resultado = await produtosServices.ativarProduto(id);
   
-      return res.status(200).json({mensagem: 'Produto reativado com sucesso.'});
+      return res.status(200).json({mensagem: resultado});
     } catch (erro) {
       next(erro);
     }
