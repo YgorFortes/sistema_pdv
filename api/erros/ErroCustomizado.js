@@ -5,7 +5,6 @@ class ErroCustomizado extends Error{
     this.statusCode = statusCode;
   }
 
-
 }
 
 export default ErroCustomizado;

@@ -19,7 +19,7 @@ class Usuario {
     this.deletedAt = null || deletedAt;
   }
 
-  get info(){
+  get informacoes(){
     return {
       id: this.id,
       nome: this.nome,

@@ -20,13 +20,16 @@ class Produto {
     this.deletedAt = null || deletedAt;
   }
 
-  get info(){
+  get informacoes(){
     return {
       id: this.id,
       descricao: this.descricao,
       quantidade_estoque: this.quantidade_estoque,
       valor: this.valor,
       categoria_id: this.categoria_id,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      deletedAt : this.deletedAt
     };
   }
 
@@ -50,10 +53,11 @@ class Produto {
 
   async atualizar(id){
     await db('produtos').where('id', id).update({...this, updated_at: new Date()});
-    return db('produtos').where('id', id);
+    const[ produtoPegado] = await db('produtos').where({id: id}).whereNull('deletedAt');
+    return new Produto(produtoPegado);
   }
 
-  static async excluir(id){
+  static async desativar(id){
     return db('produtos').update({deletedAt: new Date()}).where(id);
   }
 
@@ -62,9 +66,13 @@ class Produto {
     return db('produtos').update({deletedAt: null}).where(id);
   }
 
+  static async excluir(id){
+    return db('produtos').delete().where(id);
+  }
+
   async salvar(){
     if(this.id){
-      const [resultado] = await this.atualizar(this.id);
+      const resultado = await this.atualizar(this.id);
       return resultado;
     }
     const resultado = await this.criar();

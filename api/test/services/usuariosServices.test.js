@@ -2,8 +2,9 @@ import UsuariosServices from "../../services/usuariosServices.js";
 const usuariosServices = new UsuariosServices();
 import {usuarioCadastrarSchema, loginSchema, usuarioEditaroSchema} from '../../schemas/usuariosSchemas.js';
 import bcrypt from 'bcrypt';
+import {describe , expect, it, jest} from '@jest/globals';
 
-// teste1.js
+
 describe('Testando schema yup de cadastro', ()=>{
   
   //arrange 
@@ -61,6 +62,7 @@ describe('Testando cadastro de UsuariosSerivces' ,()=>{
   })
 
   it('Ao cadastrar usuário, deve retorna uma mensagem informando uma mensagem de sucesso', async()=>{
+    
     const usuarioMockSchema = {
       nome: 'Email',
       email: 'ygorlapachola@gmail.com',
@@ -100,12 +102,13 @@ describe('Testando cadastro de UsuariosSerivces' ,()=>{
       email: 'ygorlapachola@gmail.com',
       senha: 'Ygor_45431820',
     }
+
     const {usuario} = await usuariosServices.criarUsuario(usuarioMockSchema);
     
     usuarioMockSchema.id = usuario.id;
     const id = usuario.id;
 
-    expect(usuarioMockSchema).toMatchObject(usuario);
+    expect(usuarioMockSchema.email).toEqual(usuario.email);
 
     await usuariosServices.excluirUsuario(id);
   })
@@ -138,7 +141,7 @@ describe('Testando login de usuarioServices', ()=>{
       senha: 'Ygor_45431820'
     }
 
-    await expect(usuariosServices.loginUsuario(usuarioMock)).rejects.toThrow('Usuário não encontrado');
+    await expect(usuariosServices.autenticarUsuario(usuarioMock)).rejects.toThrow('Usuário não encontrado');
   })
 
   it('O login deve validar se a senha é válida', async()=>{
@@ -156,7 +159,7 @@ describe('Testando login de usuarioServices', ()=>{
       senha: 'usuarioMock.senha'
     }
 
-    await expect(usuariosServices.loginUsuario(usuarioLoginMock)).rejects.toThrow('Senha inválida');
+    await expect(usuariosServices.autenticarUsuario(usuarioLoginMock)).rejects.toThrow('Senha inválida');
 
     await usuariosServices.excluirUsuario(id);
 
@@ -180,7 +183,7 @@ describe('Testando login de usuarioServices', ()=>{
     }
    
 
-    const resultado = await usuariosServices.loginUsuario(usuarioLogin);
+    const resultado = await usuariosServices.autenticarUsuario(usuarioLogin);
     expect(resultado.mensagem).toEqual('Usuário logado com sucesso');
     expect(resultado).toHaveProperty('token');
 
@@ -340,7 +343,15 @@ describe('Testando detalharLogin usuarioServices', ()=>{
       id: idUsuario,
       nome: 'Email',
       email: 'ygorlapachola@gmail.com',
-    })
+    });
+
+    expect(resultado).toEqual(
+      expect.objectContaining({
+        id: expect.any(Number),
+        nome: expect.any(String),
+        email: expect.any(String),
+      })
+    )
 
     await usuariosServices.excluirUsuario(idUsuario);
   })

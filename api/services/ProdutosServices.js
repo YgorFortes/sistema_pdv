@@ -1,21 +1,23 @@
 import Produto from "../models/Produto.js";
-import Categoria from "../models/Categoria.js";
+import CategoriasServices from "./CategoriasServices.js";
 import ErroCustomizado from "../erros/ErroCustomizado.js";
+
 class ProdutosServices {
+  constructor(){
+    this.categoriasServices = new CategoriasServices();
+  }
 
   async listarProdutos(categoria_id){
     try {
       if(categoria_id){
-        const categoriaExiste = await Categoria.pegarPorId({id: categoria_id});
-
+        const categoriaExiste = await this.categoriasServices.listarCategoriaPorId({id: categoria_id});
         if(categoriaExiste){
-          const resultado = await Produto.pegarPeloId({categoria_id});
-          return resultado;
+          const produto = await Produto.pegarPeloId({categoria_id});
+          return produto;
         }
-      
       }else{
-        const resultado = await Produto.pegar();
-        return resultado;
+        const produtos = await Produto.pegar();
+        return produtos;
       }
     } catch (erro) {
       throw erro;
@@ -24,63 +26,67 @@ class ProdutosServices {
 
   async listarProdutoPorId(id){
     try {
-      const resultado = await Produto.pegarPeloId(id);
-      return resultado;
+      const [produto] = await Produto.pegarPeloId({id});
+      if(produto){
+        return produto;
+      }
+      return [];
     } catch (erro) {
       throw erro;
     } 
   }
 
-  async cadastrarProduto(produtoCorpo){
+  async cadastrarProduto(dadosProduto){
     try {
-      const categoriaExiste = await Categoria.pegarPorId({id: produtoCorpo.categoria_id});
-     
+      const [categoriaExiste] = await this.categoriasServices.listarCategoriaPorId({id: dadosProduto.categoria_id});
       if(!categoriaExiste){
-        throw new ErroCustomizado('Categoria não existe', 404);
+        throw new ErroCustomizado('Categoria não encontrado.', 404);
       }
-      const produto = new Produto(produtoCorpo);
-      const resposta = await produto.salvar();
-      return resposta;
-      
+
+      const produtoNovo = new Produto(dadosProduto);
+      const produtoCadastrado = await produtoNovo.salvar();
+      return {mensagem: 'Produto cadastrado com sucesso.', produto: produtoCadastrado.informacoes};
     } catch (erro) {
       throw erro;
     }
   }
 
-  async atualizarProduto(id, produtoCorpo){
+  async atualizarProduto(id, dadosProduto){
     try {
-      const {categoria_id} = produtoCorpo;
       const [produtoAtual] = await Produto.pegarPeloId({id});
-      const categoriaExiste = await Categoria.pegarPorId({id: categoria_id});
+  
+      const [categoriaExiste] = await this.categoriasServices.listarCategoriaPorId({id: dadosProduto.categoria_id});
 
       if(!produtoAtual){
-        throw new ErroCustomizado('Produto não existe', 404);
+        throw new ErroCustomizado('Produto não encontrado.', 404);
       }
 
       if(!categoriaExiste){
-        throw new ErroCustomizado('Categoria não existe', 404);
+        throw new ErroCustomizado('Categoria não encontrado.', 404);
       } 
 
-      const produtoNovo = new Produto({id: produtoAtual.id,...produtoCorpo});
+      const produtoAtualizado = new Produto({id: produtoAtual.id,...dadosProduto});
     
-      const resposta = await produtoNovo.salvar(produtoNovo);
-      return resposta;
+      const produtoSalvo  = await produtoAtualizado.salvar(produtoAtualizado);
+
+      return {mensagem: 'Produto atualizado com sucesso.', produto: produtoSalvo.informacoes};
  
     } catch (erro) {
-      console.log(erro)
       throw erro;
     }
+
   }
 
-  async excluirProduto(id){
+  async desativarProduto(id){
     try {
       const [produtoExiste] = await Produto.pegarPeloId({id});
+    
       if(!produtoExiste){
-        throw new ErroCustomizado('Produto não encontrado', 404);
+        throw new ErroCustomizado('Produto não encontrado.', 404);
       }
 
-      await Produto.excluir({id});
-      return 'Produto excluido com sucesso.';
+      await Produto.desativar({id});
+      return {mensagem: 'Produto desativado com sucesso.'};
     
     } catch (erro) {
       throw erro;
@@ -90,16 +96,33 @@ class ProdutosServices {
   async ativarProduto(id){
     try {
       const [produtoDesativado] = await Produto.pegarDesativado({id});
+
       if(!produtoDesativado){
-        throw new ErroCustomizado('Produto não encontrado', 404);
+        throw new ErroCustomizado('Produto não encontrado.', 404);
       }
       
       await Produto.reativar({id});
-      return  'Produto ativado';
+      return  {mensagem: 'Produto ativado com sucesso.'};
     } catch (erro) {
       throw erro;
     }
     
+  }
+
+  async excluirProduto(id){
+    try {
+      const [produtoExiste] = await Produto.pegarPeloId({id});
+
+      if(!produtoExiste){
+        throw new ErroCustomizado('Produto não encontrado.', 404);
+      }
+
+      await Produto.excluir({id});
+      return {mensagem: 'Produto excluido com sucesso.'};
+    
+    } catch (erro) {
+      throw erro;
+    }
   }
 }
 

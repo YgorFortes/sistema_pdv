@@ -1,4 +1,4 @@
-import { clienteSchema } from '../schemas/clientesSchema.js';
+import { clientePostSchema, clientePutSchema, clienteGetSchema, clienteDeleteSchema } from '../schemas/clientesSchema.js';
 import  Services  from '../services/index.js';
 const {ClientesServices} = Services;
 const clienteServices = new ClientesServices;
@@ -13,12 +13,13 @@ class ClienteController {
     } catch (erro) {
       next(erro);
     }
+    
   }
 
   static async listarClientePorId(req, res, next){
     try {
       
-      const dadosValidados = await clienteSchema.fields.params.validate(req.params);
+      const dadosValidados = await clienteGetSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
       const resultado = await clienteServices.listarClientePorId(id);
@@ -27,11 +28,12 @@ class ClienteController {
     } catch (erro) {
       next(erro);
     }
+
   }
 
   static async cadastrarCliente(req, res ,next){
    try {
-    const cliente = await clienteSchema.fields.body.validate(req.body);
+    const cliente = await clientePostSchema.fields.body.validate(req.body);
 
     const resultado = await clienteServices.criarCliente(cliente);
 
@@ -39,11 +41,12 @@ class ClienteController {
    } catch (erro) {
     next(erro);
    }
+
   }
 
   static async atualizarCliente(req, res, next){
     try {
-      const dadosValidados = await clienteSchema.validate(
+      const dadosValidados = await clientePutSchema.validate(
         {
           body: req.body, 
           params: req.params
@@ -61,7 +64,6 @@ class ClienteController {
       next(erro);
     }
   }
-
  
 }
 

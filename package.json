@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "test1": "node --experimental-vm-modules node_modules/jest/bin/jest.js teste1.js",
+    "test:usuario:service": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testPathPattern=api/test/services/usuariosServices.test.js",
+    "test:produto:service": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testPathPattern=api/test/services/produtosServices.test.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --watch",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --coverage",
     "start": "nodemon server.js"
