@@ -37,7 +37,7 @@ class ClienteController {
 
     const resultado = await clienteServices.criarCliente(cliente);
 
-    return res.status(201).json({mensagem: 'Cliente cadastrado', resultado});
+    return res.status(201).json(resultado);
    } catch (erro) {
     next(erro);
    }
@@ -59,7 +59,7 @@ class ClienteController {
       const resultado = await clienteServices.atualizarCliente(id, novaInfoCliente);
 
 
-      return res.status(200).json({mensagem: 'Cliente atualizado com sucesso.', resultado});
+      return res.status(200).json(resultado);
     } catch (erro) {
       next(erro);
     }
