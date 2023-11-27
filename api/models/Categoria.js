@@ -8,7 +8,7 @@ class Categoria{
     this.descricao = descricao
   }
 
-  get info(){
+  get informacoes(){
     return {
       id: this.id,
       descricao: this.descricao,
@@ -21,7 +21,7 @@ class Categoria{
 
   static async pegarPorId(id){
     const categoria = await db('categorias').where(id);
-    return categoria[0];
+    return categoria;
   }
 }
 

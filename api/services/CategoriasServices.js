@@ -1,9 +1,15 @@
-import db from "../db/conecaodb.js";
 import { Services } from "./services.js";
+import Categoria from "../models/Categoria.js";
+class CategoriasServices{
 
-class CategoriasServices extends Services{
-  constructor(){
-    super('categorias');
+  async listarCategorias(){
+    const categorias = await Categoria.pegar();
+    return categorias;
+  }
+
+  async listarCategoriaPorId(id){
+    const categoria = await Categoria.pegarPorId(id);
+    return categoria;
   }
 }
 

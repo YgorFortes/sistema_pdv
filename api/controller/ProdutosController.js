@@ -1,5 +1,5 @@
 import e from "express";
-import { produtosSchema } from "../schemas/produtosSchema.js";
+import { produtosPostSchema, produtosPutSchema, produtosGetSchema, produtosDeleteSchema } from "../schemas/produtosSchema.js";
 import Services from '../services/index.js';
 const {ProdutosServices} = Services;
 const produtosServices = new ProdutosServices;
@@ -10,11 +10,11 @@ class ProdutosControlller {
 
   static async listarProdutos(req, res, next){
     try {
-      const dadosValidados =  await produtosSchema.fields.query.validate(req.query);
+      const dadosValidados =  await produtosGetSchema.fields.query.validate(req.query);
       const {categoria_id} = dadosValidados;
     
-      const listaProdutos = await produtosServices.listarProdutos(categoria_id);
-      return res.status(200).json(listaProdutos);
+      const resultado = await produtosServices.listarProdutos(categoria_id);
+      return res.status(200).json(resultado);
       
     } catch (erro) {
       next(erro);
@@ -23,10 +23,10 @@ class ProdutosControlller {
 
   static async detalharProduto(req, res, next){
     try {
-      const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
+      const dadosValidados =  await produtosGetSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
-      const resultado = await produtosServices.listarProdutoPorId({id})
+      const resultado = await produtosServices.listarProdutoPorId(id);
       return res.status(200).json(resultado);
     } catch (erro) {
       console.log(erro)
@@ -36,10 +36,10 @@ class ProdutosControlller {
   
   static async cadastrarPorduto(req, res, next ){
     try {
-      const produto = await produtosSchema.fields.body.validate(req.body);
+      const produto = await produtosPostSchema.fields.body.validate(req.body);
 
       const resultado = await produtosServices.cadastrarProduto(produto);
-      return res.status(201).json({mensagem: 'Produto criado', resultado});
+      return res.status(201).json(resultado);
     } catch (erro) {
       next(erro);
     }
@@ -48,7 +48,7 @@ class ProdutosControlller {
   static async atualizarProduto(req, res, next){
 
     try {
-      const dadosValidados = await produtosSchema.validate(
+      const dadosValidados = await produtosPutSchema.validate(
         {
           body: req.body, 
           params: req.params
@@ -61,7 +61,7 @@ class ProdutosControlller {
 
       const resultado = await produtosServices.atualizarProduto(id, novaInfoProduto);
   
-      return res.status(200).json({mensagem: 'Produto atualizado', resultado} );
+      return res.status(200).json(resultado );
     } catch (erro) {
       next(erro);
     }
@@ -70,12 +70,12 @@ class ProdutosControlller {
 
   static async deletarProduto(req, res, next){
     try {
-      const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
+      const dadosValidados =  await produtosDeleteSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
-      const resultado = await produtosServices.excluirProduto(id);
+      const resultado = await produtosServices.desativarProduto(id);
 
-      return res.status(200).json({mensagem: resultado});
+      return res.status(200).json(resultado);
     } catch (erro) {
       next(erro);
     }
@@ -84,12 +84,12 @@ class ProdutosControlller {
 
   static async reativarProduto(req, res, next){
     try {
-      const dadosValidados =  await produtosSchema.fields.params.validate(req.params);
+      const dadosValidados =  await produtosPostSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
       const resultado = await produtosServices.ativarProduto(id);
   
-      return res.status(200).json({mensagem: resultado});
+      return res.status(200).json(resultado);
     } catch (erro) {
       next(erro);
     }

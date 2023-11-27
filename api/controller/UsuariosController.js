@@ -29,7 +29,7 @@ class UsuariosController {
 
       const usuario = await loginSchema.fields.body.validate(req.body);
 
-      const resultado = await usuariosServices.loginUsuario(usuario);
+      const resultado = await usuariosServices.autenticarUsuario(usuario);
 
     
 

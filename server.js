@@ -3,7 +3,6 @@ import routers from './api/routers/index.js'
 import 'dotenv/config';
 import { manipulacaoErros, manipulacaoErro404 } from "./api/middlewares/manipulacaoErros.js";
 const port = process.env.PORT || 3000;
-
 const app = express();
 routers(app)
 
