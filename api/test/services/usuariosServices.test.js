@@ -45,6 +45,17 @@ describe('Testando schema yup de cadastro', ()=>{
     await expect(usuarioCadastrarSchema.fields.body.validate(usuarioMockSchema)).rejects.toThrow('A senha precisa ter pelo menos uma letra maiúsculas , minúsculas, um número e um carácter especial.');
   })
 
+  it('Deve validar os campos digitados corretamente', async()=>{
+    const usuarioMockSchema = {
+      nome: 'Ygor',
+      email: 'emaila@email.com',
+      senha: 'Ygor_45431820',
+    }
+    
+    const resultado = await usuarioCadastrarSchema.fields.body.validate(usuarioMockSchema);
+    expect(resultado).toMatchObject(usuarioMockSchema);
+  })
+
 })
 
 describe('Testando cadastro de UsuariosSerivces' ,()=>{
@@ -61,7 +72,7 @@ describe('Testando cadastro de UsuariosSerivces' ,()=>{
     await expect(usuariosServices.criarUsuario(usuarioMockSchema)).rejects.toThrow('Email já cadastrado');
   })
 
-  it('Ao cadastrar usuário, deve retorna uma mensagem informando uma mensagem de sucesso', async()=>{
+  it('Deve cadastrar o usuário com sucesso', async()=>{
     
     const usuarioMockSchema = {
       nome: 'Email',
@@ -217,6 +228,17 @@ describe('Testando schema yup de atualizar usuario', ()=>{
     }
 
    await expect(usuarioEditaroSchema.fields.body.validate(usuarioMockSchema)).rejects.toThrow('O campo senha é obrigatório.');
+  })
+
+  it('Deve validar os campos digitados corretamente', async()=>{
+    const usuarioMockSchema = {
+      nome: 'Ygor',
+      email: 'emaila@email.com',
+      senha: 'Ygor_45431820',
+    }
+    
+    const resultado = await usuarioCadastrarSchema.fields.body.validate(usuarioMockSchema);
+    expect(resultado).toMatchObject(usuarioMockSchema);
   })
 })
 

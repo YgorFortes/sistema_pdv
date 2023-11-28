@@ -2,7 +2,7 @@ import yup from 'yup';
 
 const clientePostSchema = yup.object({
   body: yup.object().shape({
-    nome: yup.string().trim().required('O campo nome é obrigatório.').max(45, 'Máximo 45 caracteres'),
+    nome: yup.string().trim().required('O campo nome é obrigatório.').max(45, 'Máximo 45 caracteres.'),
 
     email: yup.string().email('O campo precisa ser um email válido.').trim().required('O campo email é obrigatório.'),
 
@@ -23,54 +23,54 @@ const clientePostSchema = yup.object({
       return cepFormatado;
     }),
 
-    rua: yup.string().trim().max(45, 'Máximo 45 caracteres'),
+    rua: yup.string().trim().max(45, 'Máximo 45 caracteres.'),
 
-    numero: yup.number().typeError('Só é válido números')
-    .positive('Só recebe números positivos')
-    .integer('Só recebe números inteiros'),
+    numero: yup.number().typeError('Só é válido números.')
+    .positive('Só recebe números positivos.')
+    .integer('Só recebe números inteiros.'),
 
-    bairro: yup.string().trim().max(45, 'Máximo 45 caracteres'),
+    bairro: yup.string().trim().max(45, 'Máximo 45 caracteres.'),
     
-    cidade: yup.string().trim().max(45, 'Máximo 45 caracteres'),
+    cidade: yup.string().trim().max(45, 'Máximo 45 caracteres.'),
 
-    estado: yup.string().trim().max(45, 'Máximo 45 caracteres'),
+    estado: yup.string().trim().max(45, 'Máximo 45 caracteres.'),
   }),
   
   params: yup.object().shape({
     id: yup.number()
-    .typeError('O parâmetros id de clientes na url só recebe números')
-    .positive('O parâmetros id de clientes na url só recebe números positivos')
-    .integer('O parâmetros id de clientes na url só recebe números inteiros')
-    .required('O parâmetros id de clientes na url é obigatório')
+    .typeError('O parâmetros id de clientes na url só recebe números.')
+    .positive('O parâmetros id de clientes na url só recebe números positivos.')
+    .integer('O parâmetros id de clientes na url só recebe números inteiros.')
+    .required('O parâmetros id de clientes na url é obigatório.')
   }),
   query: yup.object().shape({
     aleatorio: yup.number()
-    .typeError('O query categoria_id na url só recebe números')
-    .positive('O query categoria_id na url só recebe números só recebe números positivos')
-    .integer('O query categoria_id na url só recebe números só recebe números inteiros')
+    .typeError('O query categoria_id na url só recebe números.')
+    .positive('O query categoria_id na url só recebe números só recebe números positivos.')
+    .integer('O query categoria_id na url só recebe números só recebe números inteiros.')
   })
 })
 
 const clienteGetSchema = yup.object({
   params: yup.object().shape({
     id: yup.number()
-    .typeError('O parâmetros id de clientes na url só recebe números')
-    .positive('O parâmetros id de clientes na url só recebe números positivos')
-    .integer('O parâmetros id de clientes na url só recebe números inteiros')
-    .required('O parâmetros id de clientes na url é obigatório')
+    .typeError('O parâmetros id de clientes na url só recebe números.')
+    .positive('O parâmetros id de clientes na url só recebe números positivos.')
+    .integer('O parâmetros id de clientes na url só recebe números inteiros.')
+    .required('O parâmetros id de clientes na url é obigatório.')
   }),
   query: yup.object().shape({
     aleatorio: yup.number()
-    .typeError('O query categoria_id na url só recebe números')
-    .positive('O query categoria_id na url só recebe números só recebe números positivos')
-    .integer('O query categoria_id na url só recebe números só recebe números inteiros')
+    .typeError('O query categoria_id na url só recebe números.')
+    .positive('O query categoria_id na url só recebe números só recebe números positivos.')
+    .integer('O query categoria_id na url só recebe números só recebe números inteiros.')
   })
 })
 
 
 const clientePutSchema = yup.object({
   body: yup.object().shape({
-    nome: yup.string().trim().required('O campo nome é obrigatório.').max(45, 'Máximo 45 caracteres'),
+    nome: yup.string().trim().required('O campo nome é obrigatório.').max(45, 'Máximo 45 caracteres.'),
 
     email: yup.string().email('O campo precisa ser um email válido.').trim().required('O campo email é obrigatório.'),
 
@@ -91,47 +91,47 @@ const clientePutSchema = yup.object({
       return cepFormatado;
     }),
 
-    rua: yup.string().trim().max(45, 'Máximo 45 caracteres'),
+    rua: yup.string().trim().max(45, 'Máximo 45 caracteres.'),
 
-    numero: yup.number().typeError('Só é válido números')
-    .positive('Só recebe números positivos')
-    .integer('Só recebe números inteiros'),
+    numero: yup.number().typeError('Só é válido números.')
+    .positive('Só recebe números positivos.')
+    .integer('Só recebe números inteiros.'),
 
-    bairro: yup.string().trim().max(45, 'Máximo 45 caracteres'),
+    bairro: yup.string().trim().max(45, 'Máximo 45 caracteres.'),
     
-    cidade: yup.string().trim().max(45, 'Máximo 45 caracteres'),
+    cidade: yup.string().trim().max(45, 'Máximo 45 caracteres.'),
 
-    estado: yup.string().trim().max(45, 'Máximo 45 caracteres'),
+    estado: yup.string().trim().max(45, 'Máximo 45 caracteres.'),
   }),
   
   params: yup.object().shape({
     id: yup.number()
-    .typeError('O parâmetros id de clientes na url só recebe números')
-    .positive('O parâmetros id de clientes na url só recebe números positivos')
-    .integer('O parâmetros id de clientes na url só recebe números inteiros')
-    .required('O parâmetros id de clientes na url é obigatório')
+    .typeError('O parâmetros id de clientes na url só recebe números.')
+    .positive('O parâmetros id de clientes na url só recebe números positivos.')
+    .integer('O parâmetros id de clientes na url só recebe números inteiros.')
+    .required('O parâmetros id de clientes na url é obigatório.')
   }),
   query: yup.object().shape({
     aleatorio: yup.number()
-    .typeError('O query categoria_id na url só recebe números')
-    .positive('O query categoria_id na url só recebe números só recebe números positivos')
-    .integer('O query categoria_id na url só recebe números só recebe números inteiros')
+    .typeError('O query categoria_id na url só recebe números.')
+    .positive('O query categoria_id na url só recebe números só recebe números positivos.')
+    .integer('O query categoria_id na url só recebe números só recebe números inteiros.')
   })
 })
 
 const clienteDeleteSchema = yup.object({
   params: yup.object().shape({
     id: yup.number()
-    .typeError('O parâmetros id de clientes na url só recebe números')
-    .positive('O parâmetros id de clientes na url só recebe números positivos')
-    .integer('O parâmetros id de clientes na url só recebe números inteiros')
-    .required('O parâmetros id de clientes na url é obigatório')
+    .typeError('O parâmetros id de clientes na url só recebe números.')
+    .positive('O parâmetros id de clientes na url só recebe números positivos.')
+    .integer('O parâmetros id de clientes na url só recebe números inteiros.')
+    .required('O parâmetros id de clientes na url é obigatório.')
   }),
   query: yup.object().shape({
     aleatorio: yup.number()
-    .typeError('O query categoria_id na url só recebe números')
-    .positive('O query categoria_id na url só recebe números só recebe números positivos')
-    .integer('O query categoria_id na url só recebe números só recebe números inteiros')
+    .typeError('O query categoria_id na url só recebe números.')
+    .positive('O query categoria_id na url só recebe números só recebe números positivos.')
+    .integer('O query categoria_id na url só recebe números só recebe números inteiros.')
   })
 })
 

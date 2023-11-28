@@ -23,7 +23,6 @@ class ClientesServices  {
     } catch (erro) {
       throw erro;
     }
-
   }
 
   async  criarCliente(dadosCliente){
@@ -34,7 +33,7 @@ class ClientesServices  {
       const clienteNovo = new Cliente(dadosCliente);
       const clienteCadastrado = await clienteNovo.salvar();
 
-      return {mensagem: 'Cliente cadastrado', cliente: clienteCadastrado};
+      return {mensagem: 'Cliente cadastrado.', cliente: clienteCadastrado};
     } catch (erro) {
       throw erro;
     }
@@ -47,7 +46,7 @@ class ClientesServices  {
 
       const [clienteAtual] = await Cliente.pegarPorId({id});
       if(!clienteAtual){
-        throw new ErroCustomizado('Cliente não encontrado', 404);
+        throw new ErroCustomizado('Cliente não encontrado.', 404);
       }
 
       await verificarEmailCpfUnicos(email, cpf, id);
@@ -56,13 +55,29 @@ class ClientesServices  {
 
       const clienteSalvo = await clienteAtualizado.salvar();
 
-      return {mensagem: 'Cliente cadastrado', cliente: clienteSalvo};
+      return {mensagem: 'Cliente atualizado com sucesso.', cliente: clienteSalvo};
     } catch (erro) {
       throw erro;
     }
 
   }
 
+  async excluirCliente(id){
+    try {
+      const [clienteExiste] = await Cliente.pegarPorId({id})
+
+      if(!clienteExiste){
+        throw new ErroCustomizado('Cliente não encontrado.', 404);
+      }
+
+      await Cliente.excluir({id});
+      return {mensagem: 'Cliente excluido com sucesso.'};
+    
+    } catch (erro) {
+      throw erro;
+    }
+    
+  }
 
 }
 
@@ -86,3 +101,4 @@ async function verificarEmailCpfUnicos(email, cpf, id = null){
 }
 
 export default ClientesServices;
+export {verificarEmailCpfUnicos}

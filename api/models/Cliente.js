@@ -86,6 +86,10 @@ class Cliente {
     return db('clientes').where(cpf);
   }
 
+  static async excluir(id){
+    return db('clientes').delete().where(id);
+  }
+
 
 
   static async verificaEmailCpfUnico(email, cpf, id = null){

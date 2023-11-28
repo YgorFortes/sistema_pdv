@@ -1,7 +1,8 @@
 import ProdutosServices from "../../services/ProdutosServices.js";
 const produtosServices = new ProdutosServices();
-import { produtosPostSchema } from "../../schemas/produtosSchema.js";
+import { produtosPostSchema, produtosPutSchema } from "../../schemas/produtosSchema.js";
 import Produto from "../../models/Produto.js";
+import {describe , expect, it, jest} from '@jest/globals';
 
 describe('Testando listarProdutos de ProdutosServices', ()=>{
   it('Deve retornar um array de produtos pela categoria_id quando for colocado', async()=>{
@@ -22,6 +23,18 @@ describe('Testando listarProdutos de ProdutosServices', ()=>{
   });
 
   it('Deve retornar a lista de todos os produtos quando categoria_id não for passado', async()=>{
+
+    const produtoMock = {
+      descricao: "HeadPhone show",
+      categoria_id: 1,
+      valor:250,
+      quantidade_estoque:5
+    }
+
+
+    const resultado1 = await produtosServices.cadastrarProduto(produtoMock);
+    const resultado2 = await produtosServices.cadastrarProduto(produtoMock);
+
     
     const produtos= await produtosServices.listarProdutos();
 
@@ -33,22 +46,36 @@ describe('Testando listarProdutos de ProdutosServices', ()=>{
       expect(produto).toHaveProperty('valor');
       expect(produto).toHaveProperty('categoria_id');
     });
+
+    await produtosServices.excluirProduto(resultado1.produto.id);
+    await produtosServices.excluirProduto(resultado2.produto.id);
   });
 
 });
 
 describe('Testando  listarProduto de ProdutosServices', ()=>{
   it('Deve voltar o produto correto quando ID válido fornecido', async()=>{
-    const id = 1;
 
-    const produto = await produtosServices.listarProdutoPorId(id);
+    const produtoMock = {
+      descricao: "HeadPhone show",
+      categoria_id: 1,
+      valor:250,
+      quantidade_estoque:5
+    }
 
-    expect(produto.id).toEqual(id);
+
+    const resultado = await produtosServices.cadastrarProduto(produtoMock);
+
+    const produto = await produtosServices.listarProdutoPorId(resultado.produto.id);
+
+    expect(produto.id).toEqual(resultado.produto.id);
     expect(produto).toHaveProperty('id');
     expect(produto).toHaveProperty('descricao');
     expect(produto).toHaveProperty('quantidade_estoque');
     expect(produto).toHaveProperty('valor');
     expect(produto).toHaveProperty('categoria_id');
+
+    await produtosServices.excluirProduto(resultado.produto.id);
   })
 
   it('Deve retornar um array vazio se produto não encontrado', async()=>{
@@ -104,6 +131,18 @@ describe('testando schema yup cadastro de produtos', ()=>{
 
     await expect(produtosPostSchema.fields.body.validate(mockProduto)).rejects.toThrow('O campo quantidade_estoque é obrigatório.');
   });
+
+  it('Deve validar os campos digitados corretamente', async()=>{
+    const mockProduto = {
+      descricao: "HeadPhone show",
+      categoria_id: 1,
+      valor:250,
+      quantidade_estoque:5
+    }
+    
+    const resultado = await produtosPostSchema.fields.body.validate(mockProduto)
+    expect(resultado).toMatchObject(mockProduto);
+  })
 });
 
 describe('Testando cadastrarProduto em produtoServices', ()=>{
@@ -118,7 +157,7 @@ describe('Testando cadastrarProduto em produtoServices', ()=>{
     await expect(produtosServices.cadastrarProduto(produtoMock)).rejects.toThrow('Categoria não encontrado.');
   });
 
-  it('Deve ter uma mensagem de sucesso, e o objeto do produto cadastrado', async()=>{
+  it('Deve criar o produto com sucesso', async()=>{
     const produtoMock = {
       descricao: "HeadPhone show",
       categoria_id: 1,
@@ -139,6 +178,64 @@ describe('Testando cadastrarProduto em produtoServices', ()=>{
     expect(produto).toMatchObject(produtoMock)
     await produtosServices.excluirProduto(produto.id);
   });
+});
+
+describe('testando schema yup atualizar de produtos', ()=>{
+  it('Deve ter campo descricao preenchido', async ()=>{
+
+    const mockProduto = {
+      categoria_id: "1",
+      valor:250,
+      quantidade_estoque:"5"
+    }
+
+    await expect(produtosPutSchema.fields.body.validate(mockProduto)).rejects.toThrow('O campo descricao é obrigatório.');
+  });
+
+  it('Deve ter campo categoria_id preenchido', async ()=>{
+
+    const mockProduto = {
+      descricao: "HeadPhone show",
+      valor:250,
+      quantidade_estoque:"5"
+    }
+
+    await expect(produtosPutSchema.fields.body.validate(mockProduto)).rejects.toThrow('O campo categoria_id é obrigatório.');
+  });
+
+  it('Deve ter campo valor preenchido', async ()=>{
+
+    const mockProduto = {
+      descricao: "HeadPhone show",
+      categoria_id: "1",
+      quantidade_estoque:"5"
+    }
+
+    await expect(produtosPutSchema.fields.body.validate(mockProduto)).rejects.toThrow('O campo valor é obrigatório.');
+  });
+
+  it('Deve ter campo quantidade_estoque preenchido', async ()=>{
+
+    const mockProduto = {
+      descricao: "HeadPhone show",
+      categoria_id: "1",
+      valor:250,
+    }
+
+    await expect(produtosPutSchema.fields.body.validate(mockProduto)).rejects.toThrow('O campo quantidade_estoque é obrigatório.');
+  });
+
+  it('Deve validar os campos digitados corretamente', async()=>{
+    const mockProduto = {
+      descricao: "HeadPhone show",
+      categoria_id: 1,
+      valor:250,
+      quantidade_estoque:5
+    }
+    
+    const resultado = await produtosPutSchema.fields.body.validate(mockProduto)
+    expect(resultado).toMatchObject(mockProduto);
+  })
 });
 
 describe('Testando atualizarProduto em produtoService', ()=>{
@@ -178,7 +275,7 @@ describe('Testando atualizarProduto em produtoService', ()=>{
     await produtosServices.excluirProduto(produto.id);
   });
 
-  it('Deve retornar uma mensagem de sucesso e o objeto atualizado', async()=>{
+  it('Deve atualizar o produto com sucesso', async()=>{
     const produtoCadastroMock = {
       descricao: "HeadPhone show",
       categoria_id: 1,
@@ -256,7 +353,6 @@ describe('Testando desativarProduto de produtoServices', ()=>{
     await produtosServices.excluirProduto(produto.id);
   });
 });
-
 
 describe('testando excluirProduto de produtoServices ', ()=>{
   it('Deve lançar um erro se produto não existir', async()=>{
