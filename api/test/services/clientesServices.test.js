@@ -1,24 +1,35 @@
 import ClientesServices from "../../services/ClientesServices.js";
 const clienteServices = new ClientesServices();
 import { clientePostSchema, clientePutSchema, clienteGetSchema, clienteDeleteSchema } from "../../schemas/clientesSchema.js";
-import { verificarEmailCpfUnicos } from "../../services/ClientesServices.js";
-import Cliente from "../../models/Cliente.js";
+
 import {describe , expect, it, jest} from '@jest/globals';
 
 describe('Testando listarClientes no ClienteServices', ()=>{
   it('Deve trazer um array de clientes com propriedades de id, nome, e cpf ', async ()=>{
+
+    const clienteMock = {
+      cpf:"52489636978",
+      email:"Junior@gmail.com",
+      nome: "Junior",
+    }
+
+    await clienteServices.criarCliente(clienteMock);
+
     const clientes = await clienteServices.listarClientes();
 
-    clientes.forEach((cliente)=>{
+    clientes.forEach( async (cliente)=>{
       expect(cliente).toHaveProperty('id');
       expect(cliente.id).not.toBeNull();
       expect(cliente).toHaveProperty('nome');
       expect(cliente.nome).not.toBeNull();
       expect(cliente).toHaveProperty('cpf');
       expect(cliente.cpf).not.toBeNull();
+      await clienteServices.excluirCliente(cliente.id);
     })
 
     expect(Array.isArray(clientes)).toBe(true);
+
+   
   })
 });
 
@@ -110,7 +121,7 @@ describe('Testando o schema de yup ao cadastrar cliente', ()=>{
   })
 });
 
-describe('Testando o cadastrarCliente no ClienteServices', ()=>{
+describe('Testando o cadastrar Cliente no ClienteServices', ()=>{
 
   it('Deve lançar erro de cliente já ter cpf cadastrado', async()=>{
 
@@ -202,6 +213,69 @@ describe('Testando o cadastrarCliente no ClienteServices', ()=>{
     expect(mensagem).toEqual('Cliente cadastrado.');
     await clienteServices.excluirCliente(cliente.id);
   });
+});
+
+describe('Testando o schema de yup ao atualizar cliente', ()=>{
+  it('Deve ter o campo nome preenchido ao atualizar cliente', async ()=>{
+    const clienteMock = {
+      cpf:"52489636978",
+      email:"Junior@gmail.com",
+    
+    }
+
+    await expect(clientePutSchema.fields.body.validate(clienteMock)).rejects.toThrow('O campo nome é obrigatório.');
+  })
+
+  it('Deve ter o campo cpf preenchido ao atualizar cliente', async ()=>{
+    const clienteMock = {
+      email:"Junior@gmail.com",
+      nome: "Junior"
+    }
+
+    await expect(clientePutSchema.fields.body.validate(clienteMock)).rejects.toThrow('O campo cpf é obrigatório.');
+  })
+
+  it('Deve ter o campo cpf além de preenchido deve ser do formato correto', async ()=>{
+    const clienteMock = {
+      cpf:"ia",
+      email:"Junior@gmail.com",
+      nome: "Junior"
+    }
+
+    await expect(clientePutSchema.fields.body.validate(clienteMock)).rejects.toThrow('O campo cpf precisa ser válido.');
+  })
+
+  it('Deve ter o campo email preenchido ao cadastrar cliente', async ()=>{
+    const clienteMock = {
+      nome: "Junior",
+      cpf:"52489636978",
+    }
+
+    await expect(clientePutSchema.fields.body.validate(clienteMock)).rejects.toThrow('O campo email é obrigatório.');
+  })
+
+  it('Ser o campo cep for preenchido, deve ser do formato correto', async ()=>{
+    const clienteMock = {
+      cpf:"52489636978",
+      email:"Junior@gmail.com",
+      nome: "Junior",
+      cep: '4a5'
+    }
+
+    await expect(clientePutSchema.fields.body.validate(clienteMock)).rejects.toThrow('O campo cep precisa ser válido.');
+  })
+
+  it('Ser o campo numero for preenchido, deve ser do somente numeros', async ()=>{
+    const clienteMock = {
+      cpf:"52489636978",
+      email:"Junior@gmail.com",
+      nome: "Junior",
+      numero: "aaaaa"
+
+    }
+
+    await expect(clientePutSchema.fields.body.validate(clienteMock)).rejects.toThrow('Só é válido números.');
+  })
 });
 
 describe('Testando atualizarCliente de ClienteServices', ()=>{
@@ -360,4 +434,4 @@ describe('Testando excluirCLiente de ClienteServices', ()=>{
     const clienteBuscado = await clienteServices.listarClientePorId(cliente.id);
     expect(clienteBuscado).toEqual([]);
   })
-})
+});

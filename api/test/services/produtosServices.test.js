@@ -6,12 +6,25 @@ import {describe , expect, it, jest} from '@jest/globals';
 
 describe('Testando listarProdutos de ProdutosServices', ()=>{
   it('Deve retornar um array de produtos pela categoria_id quando for colocado', async()=>{
-    const categoria_id = 5;
-    const produto = await produtosServices.listarProdutos(categoria_id);
-    produto.forEach((itemproduto)=> {
-     expect(itemproduto.categoria_id).toEqual(categoria_id);
+    const produtoMock = {
+      descricao: "HeadPhone show",
+      categoria_id: 1,
+      valor:250,
+      quantidade_estoque:5
+    }
+
+   const resultado = await produtosServices.cadastrarProduto(produtoMock);
+
+    const produtos = await produtosServices.listarProdutos(produtoMock.categoria_id);
+
+    produtos.forEach((itemproduto)=> {
+     expect(itemproduto.categoria_id).toEqual(produtoMock.categoria_id);
     })
-    expect(produto).toBeInstanceOf(Array);
+
+    expect(produtos).toBeInstanceOf(Array);
+    
+
+    await produtosServices.excluirProduto(resultado.produto.id);
   });
 
   it('Deve retorna um array vazio quando categoria não existir', async()=>{
