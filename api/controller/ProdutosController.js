@@ -1,4 +1,3 @@
-import e from "express";
 import { produtosPostSchema, produtosPutSchema, produtosGetSchema, produtosDeleteSchema } from "../schemas/produtosSchema.js";
 import Services from '../services/index.js';
 const {ProdutosServices} = Services;

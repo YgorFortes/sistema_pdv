@@ -1,7 +1,5 @@
 import Services from "../services/index.js";
-import criarHashSenha from "../helpers/criarHashSenha.js";
-import verificaSenha from "../helpers/verificaSenha.js";
-import { criarToken,  resgatarPayLoadToken } from "../helpers/token.js";
+import { resgatarPayLoadToken } from "../helpers/token.js";
 import { usuarioCadastrarSchema, loginSchema, usuarioEditaroSchema } from "../schemas/usuariosSchemas.js";
 
 const {UsuariosServices} = Services;
@@ -16,8 +14,6 @@ class UsuariosController {
 
       const resultado = await usuariosServices.criarUsuario(usuario);
 
-    
-
       return res.status(201).json(resultado);
     } catch (erro) {
       next(erro)
@@ -30,8 +26,6 @@ class UsuariosController {
       const usuario = await loginSchema.fields.body.validate(req.body);
 
       const resultado = await usuariosServices.autenticarUsuario(usuario);
-
-    
 
       return res.status(200).json(resultado)
     } catch (erro) {
