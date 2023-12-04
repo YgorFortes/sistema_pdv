@@ -7,7 +7,7 @@ export function up (knex)  {
     tabela.increments('id').primary().notNullable();
     tabela.integer('cliente_id').notNullable().unsigned();
     tabela.foreign('cliente_id').references('clientes.id');
-    tabela.string('observacao',45).notNullable();
+    tabela.string('observacao',255);
     tabela.float('valor_total').notNullable();
     tabela.timestamp('deletedAt').defaultTo(null);
     tabela.timestamps(true, true);
