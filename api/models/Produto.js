@@ -6,6 +6,7 @@ class Produto {
     quantidade_estoque,
     valor,
     categoria_id,
+    pedido_produtos,
     created_at,
     updated_at,
     deletedAt,
@@ -15,6 +16,7 @@ class Produto {
     this.quantidade_estoque = quantidade_estoque;
     this.valor = valor;
     this.categoria_id = categoria_id;
+    this.pedido_produtos = pedido_produtos;
     this.created_at = created_at || new Date();
     this.updated_at = updated_at || new Date();
     this.deletedAt = null || deletedAt;
@@ -22,7 +24,7 @@ class Produto {
 
   get informacoes(){
     return {
-      id: this.id,
+      id: this.id ,
       descricao: this.descricao,
       quantidade_estoque: this.quantidade_estoque,
       valor: this.valor,
@@ -32,6 +34,7 @@ class Produto {
       deletedAt : this.deletedAt
     };
   }
+
 
   static async pegar(){
     return db('produtos').whereNull('deletedAt');

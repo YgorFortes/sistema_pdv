@@ -4,7 +4,7 @@
  */
 export function up (knex)  {
   return knex.schema.alterTable('produtos', function(table) {
-    table.string('produto_imagem',255).defaultTo(null);
+    table.string('produto_imagem',500).defaultTo(null);
   });
 };
 
