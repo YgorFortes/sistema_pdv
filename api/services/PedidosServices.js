@@ -1,4 +1,4 @@
-import Pedido from "../models/Pedido.js"
+import Pedido from "../models/Pedido.js";
 import ErroCustomizado from "../erros/ErroCustomizado.js";
 import ProdutosServices from "./ProdutosServices.js";
 import ClientesServices from "./ClientesServices.js";
@@ -7,6 +7,25 @@ class PedidosServices {
   constructor(){
     this.produtosServices = new ProdutosServices();
     this.clienteServices = new ClientesServices();
+  }
+
+  async listarPedidos(dadosPedido){
+    const {cliente_id} = dadosPedido;
+    try {
+
+      if(cliente_id){
+        const cliente = await this.clienteServices.listarClientePorId(cliente_id);
+    
+        if(cliente.length <1){
+          throw new ErroCustomizado('Cliente não encontrado.',404)
+        }
+      }
+
+      const pedidos = await Pedido.pegar(cliente_id);
+      return pedidos;
+    } catch (erro) {
+      throw erro;
+    }
   }
 
   async criarPedido(dadosPedido){
@@ -49,7 +68,7 @@ class PedidosServices {
         });
       }
 
-      enviarEmail(clienteExiste.email, pedidoCriado);
+      // enviarEmail(clienteExiste.email, pedidoCriado);
     
       return {mensagem: 'Pedido Criado! Verifique o email', pedido: pedidoCriado};
     } catch (erro) {
