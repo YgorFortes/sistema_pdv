@@ -6,7 +6,6 @@ class Pedido {
     cliente_id,
     observacao,
     valor_total,
-    pedido_produtos,
     created_at,
     updated_at,
     deletedAt,
@@ -23,35 +22,20 @@ class Pedido {
 
 
 
-    
-  calcularValorTotal( valor_total) {
-    valor_total = 0;
 
-    for(let pedido_produto of this.pedido_produtos){
-      valor_total += pedido_produto.valor_produto;
-    }
-    return valor_total;
+  static async pegar(cliente_id = null){
+    const pedidos = cliente_id ? await db('pedidos').where({cliente_id}): await db('pedidos');
+    const pedidosProdutosSelecionado = Promise.all(
+      pedidos.map(async (pedido) => {
+        const pedidoProduto = await PedidoProduto.pegarPorId({ pedido_id: pedido.id });
+        return { pedido, pedido_produtos: pedidoProduto };
+      })
+    );
+
+   return await pedidosProdutosSelecionado;
   }
 
-  gerarPedido(produtos, pedidos){
-
-    produtos.forEach((produto, index)=>{
-      const pedido_produto = new PedidoProduto(
-        {
-          id: null,
-          produto_id: produto.id,
-          quantidade_produto: pedidos[index].quantidade_produto,
-          valor_produto: (produto.valor * pedidos[index].quantidade_produto)
-        }
-      );
-      this.pedido_produtos.push(pedido_produto);
-    })
     
-    this.valor_total = this.calcularValorTotal();
-  }
-  
-
-
 
   async criar(){
     const [idPedidoCriado] = await db('pedidos').insert(
@@ -89,12 +73,35 @@ class Pedido {
     const resultado = await this.criar();
     return resultado;
   }
+
+
+
+  calcularValorTotal( valor_total) {
+    valor_total = 0;
+
+    for(let pedido_produto of this.pedido_produtos){
+      valor_total += pedido_produto.valor_produto;
+    }
+    return valor_total;
+  }
+
+  gerarPedido(produtos, pedidos){
+
+    produtos.forEach((produto, index)=>{
+      const pedido_produto = new PedidoProduto(
+        {
+          id: null,
+          produto_id: produto.id,
+          quantidade_produto: pedidos[index].quantidade_produto,
+          valor_produto: (produto.valor * pedidos[index].quantidade_produto)
+        }
+      );
+      this.pedido_produtos.push(pedido_produto);
+    })
+    
+    this.valor_total = this.calcularValorTotal();
+  }
+
 }
-
-
-
-
-
-
 
 export default Pedido;
