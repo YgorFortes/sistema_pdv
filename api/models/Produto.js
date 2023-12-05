@@ -1,4 +1,5 @@
 import db from "../db/conecaodb.js";
+import PedidoProduto from "./PedidoProdutos.js";
 class Produto {
   constructor({
     id, 
@@ -16,7 +17,6 @@ class Produto {
     this.quantidade_estoque = quantidade_estoque;
     this.valor = valor;
     this.categoria_id = categoria_id;
-    this.pedido_produtos = pedido_produtos;
     this.created_at = created_at || new Date();
     this.updated_at = updated_at || new Date();
     this.deletedAt = null || deletedAt;
@@ -47,6 +47,20 @@ class Produto {
   static async pegarPeloId(id){
     return db('produtos').where(id).whereNull('deletedAt');
   }
+
+  static async pegarProdutoPorPedido(id){
+    const produtos = await db('produtos').where(id).whereNull('deletedAt');
+    const pedidosProdutosSelecionado = Promise.all(
+      produtos.map(async (produto) => {
+        const pedidoProduto = await PedidoProduto.pegarPorId({ produto_id: produto.id });
+        return { produto, pedido_produtos: pedidoProduto };
+      })
+    );
+
+   return await pedidosProdutosSelecionado;
+  }
+
+  
 
   async criar(){
     const [idProdutoCriado] = await  db('produtos').insert(this);
