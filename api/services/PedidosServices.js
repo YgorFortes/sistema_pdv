@@ -28,6 +28,19 @@ class PedidosServices {
     }
   }
 
+  async listarPedidoPorId(id){
+    try {
+      const pedido = await Pedido.pegarPorId({id});
+      
+      if(!pedido){
+       return [];
+      }
+      return pedido;
+    } catch (erro) {
+      throw erro;
+    }
+  }
+
   async criarPedido(dadosPedido){
     const {cliente_id, observacao, pedido_produtos} = dadosPedido;
     try {
