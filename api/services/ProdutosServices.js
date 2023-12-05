@@ -1,6 +1,7 @@
 import Produto from "../models/Produto.js";
 import CategoriasServices from "./CategoriasServices.js";
 import ErroCustomizado from "../erros/ErroCustomizado.js";
+import PedidosServices from "./PedidosServices.js";
 
 class ProdutosServices {
   constructor(){
@@ -79,10 +80,14 @@ class ProdutosServices {
 
   async desativarProduto(id){
     try {
-      const [produtoExiste] = await Produto.pegarPeloId({id});
-    
+      const [produtoExiste] = await Produto.pegarProdutoPorPedido({id});
+      
       if(!produtoExiste){
         throw new ErroCustomizado('Produto não encontrado.', 404);
+      }
+      
+      if(produtoExiste.pedido_produtos.length >1){
+        throw new ErroCustomizado('Produto associado a um pedido',409);
       }
 
       await Produto.desativar({id});
@@ -111,14 +116,18 @@ class ProdutosServices {
 
   async excluirProduto(id){
     try {
-      const [produtoExiste] = await Produto.pegarPeloId({id});
-
+      const [produtoExiste] = await Produto.pegarProdutoPorPedido({id});
+      
       if(!produtoExiste){
         throw new ErroCustomizado('Produto não encontrado.', 404);
       }
+      
+      if(produtoExiste.pedido_produtos.length >1){
+        throw new ErroCustomizado('Produto associado a um pedido',409);
+      }
 
-      await Produto.excluir({id});
-      return {mensagem: 'Produto excluido com sucesso.'};
+      await Produto.desativar({id});
+      return {mensagem: 'Produto desativado com sucesso.'};
     
     } catch (erro) {
       throw erro;

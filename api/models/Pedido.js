@@ -35,6 +35,18 @@ class Pedido {
    return await pedidosProdutosSelecionado;
   }
 
+  static async pegarPorId(id){
+    const pedidos = await db('pedidos').where(id);
+    const pedidosProdutosSelecionado = Promise.all(
+      pedidos.map(async (pedido) => {
+        const pedidoProduto = await PedidoProduto.pegarPorId({ pedido_id: pedido.id });
+        return { pedido, pedido_produtos: pedidoProduto };
+      })
+    );
+
+   return await pedidosProdutosSelecionado;
+  }
+
     
 
   async criar(){
