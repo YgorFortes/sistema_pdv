@@ -47,6 +47,7 @@ class Cliente {
   }
 
 
+
   static async pegar(){
     return db('clientes').whereNull('deletedAt');
   }
