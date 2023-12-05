@@ -86,7 +86,7 @@ class ProdutosServices {
         throw new ErroCustomizado('Produto não encontrado.', 404);
       }
       
-      if(produtoExiste.pedido_produtos.length >1){
+      if(produtoExiste.pedido_produtos.length > 0){
         throw new ErroCustomizado('Produto associado a um pedido',409);
       }
 
