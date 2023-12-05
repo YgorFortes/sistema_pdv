@@ -14,6 +14,20 @@ class PedidoProduto {
     this.valor_produto = valor_produto;
   }
 
+  get info(){
+    return {
+      id: this.id,
+      quantidade_produto: this.quantidade_produto,
+      valor_produto: this.valor_produto,
+      pedido_id: this.pedido_id,
+      produto_id: this.produto_id,
+    };
+  }
+
+  static async pegarPorId(id){
+    return await db('pedido_produtos').where(id);
+  }
+
   async criar(){
     const [idResultadoCriado] = await db('pedido_produtos').insert(this);
     const [pedidoCriado] = await db('pedido_produtos').where({id: idResultadoCriado});
