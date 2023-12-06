@@ -1,9 +1,11 @@
+import { uploadImagem } from "../middlewares/uploadImagem.js";
 import { produtosPostSchema, produtosPutSchema, produtosGetSchema, produtosDeleteSchema } from "../schemas/produtosSchema.js";
 import Services from '../services/index.js';
 const {ProdutosServices} = Services;
 const produtosServices = new ProdutosServices;
-const {CategoriasServices} = Services;
-const categoriasServices = new CategoriasServices;
+import axios from "axios";
+
+
 
 class ProdutosControlller {
 
@@ -35,9 +37,17 @@ class ProdutosControlller {
   
   static async cadastrarPorduto(req, res, next ){
     try {
-      const produto = await produtosPostSchema.fields.body.validate(req.body);
+      
+      const dadosProdutoConvertido = JSON.parse(req.body.produto);
+      const produto = await produtosPostSchema.fields.body.validate(dadosProdutoConvertido);
+
+      if(req.file){
+        const urlImagem = await uploadImagem(req.file.filename);
+        produto.produto_imagem = urlImagem;
+      }
 
       const resultado = await produtosServices.cadastrarProduto(produto);
+
       return res.status(201).json(resultado);
     } catch (erro) {
       next(erro);
@@ -47,14 +57,22 @@ class ProdutosControlller {
   static async atualizarProduto(req, res, next){
 
     try {
+      const dadosProdutoConvertido = JSON.parse(req.body.produto);
+
       const dadosValidados = await produtosPutSchema.validate(
         {
-          body: req.body, 
+          body: dadosProdutoConvertido, 
           params: req.params
         }
       );
-      
+
+      if(req.file){
+        const urlImagem = await uploadImagem(req.file.filename);
+        dadosValidados.body.produto_imagem = urlImagem;
+      }
+
       const novaInfoProduto = dadosValidados.body;
+     
 
       const {id} = dadosValidados.params;
 
