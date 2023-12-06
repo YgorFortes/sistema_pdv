@@ -7,7 +7,7 @@ class Produto {
     quantidade_estoque,
     valor,
     categoria_id,
-    pedido_produtos,
+    produto_imagem,
     created_at,
     updated_at,
     deletedAt,
@@ -17,6 +17,7 @@ class Produto {
     this.quantidade_estoque = quantidade_estoque;
     this.valor = valor;
     this.categoria_id = categoria_id;
+    this.produto_imagem = null || produto_imagem;
     this.created_at = created_at || new Date();
     this.updated_at = updated_at || new Date();
     this.deletedAt = null || deletedAt;
@@ -29,6 +30,7 @@ class Produto {
       quantidade_estoque: this.quantidade_estoque,
       valor: this.valor,
       categoria_id: this.categoria_id,
+      produto_imagem: this.produto_imagem,
       created_at: this.created_at,
       updated_at: this.updated_at,
       deletedAt : this.deletedAt
