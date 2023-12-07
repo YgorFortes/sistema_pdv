@@ -66,7 +66,7 @@ class Pedido {
       pedidoProdutoCriado.salvar();
     });
 
-    const [pedidoCriado] = await db('pedidos').where({id: idPedidoCriado});
+    const [pedidoCriado] = await Pedido.pegarPorId({id: idPedidoCriado});
     return pedidoCriado;
   }
 
