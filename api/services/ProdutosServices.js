@@ -38,7 +38,6 @@ class ProdutosServices {
   }
 
   async cadastrarProduto(dadosProduto){
-    console.log(dadosProduto)
     try {
       const [categoriaExiste] = await this.categoriasServices.listarCategoriaPorId({id: dadosProduto.categoria_id});
       if(!categoriaExiste){

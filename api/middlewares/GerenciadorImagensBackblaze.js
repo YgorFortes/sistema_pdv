@@ -1,28 +1,16 @@
 import BackBlazeB2 from "backblaze-b2";
 import multer from "multer";
-import path from 'path'
 import ErroCustomizado from "../erros/ErroCustomizado.js";
-import fs from 'fs';
 
 const b2 = new BackBlazeB2({
   applicationKeyId: process.env.BACKBLAZEB2APPLICATIONKEYID,
   applicationKey: process.env.BACKBLAZEB2APPLICATIONKEY,
 });
 
-const pathFile = './public/uploads/imagem_produtos';
-const armazenamento = multer.diskStorage({
-  destination: (req, file, callback)=>{
-    callback(null, path.resolve(pathFile))
-  },
-  filename: (req, file , callback)=>{
-    const data = new Date().getTime();
-    callback(null, `${data}_${file.originalname}`);
-  },
-})
 
 
 const multerUploader = multer({
-  storage: armazenamento,
+  storage: multer.memoryStorage(),
   fileFilter:  (req, file, callback)=>{
     const extensaoImg = ['image/png', 'image/jpg', 'image/jpeg'].find(formatoAceito => formatoAceito == file.mimetype)
     if(!extensaoImg){
@@ -34,7 +22,7 @@ const multerUploader = multer({
 });
 
 
-async function uploadImagem(nomeArquivo){
+async function uploadImagem(nomeArquivo, buffer){
   try {
     await b2.authorize();
 
@@ -43,16 +31,13 @@ async function uploadImagem(nomeArquivo){
       bucketId: process.env.BUCKETID,
     });
 
-
     
-    const caminhoArquivo = path.resolve(pathFile, nomeArquivo);
-    const arquivoBuffer = fs.readFileSync(caminhoArquivo);
     
     const uploadResposta = await b2.uploadFile({
       uploadUrl: resposta.data.uploadUrl,
       uploadAuthToken: resposta.data.authorizationToken,
       fileName: nomeArquivo,
-      data: arquivoBuffer, 
+      data: buffer, 
     });
 
     const fileId = uploadResposta.data.fileId;
@@ -75,7 +60,7 @@ async function excluirImagem(fileId){
   const respostaNomeArquivo = await b2.getFileInfo({
     fileId: fileId,
   });
-  
+
 
   const nomeArquivo = respostaNomeArquivo.data.fileName;
 

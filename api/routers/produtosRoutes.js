@@ -1,8 +1,8 @@
 import { Router } from "express";
 import ProdutosControlller from "../controller/ProdutosController.js";
 import verificarToken from "../middlewares/verificarToken.js";
-
 import { multerUploader } from "../middlewares/GerenciadorImagensBackblaze.js";
+
 const router = Router();
 
 

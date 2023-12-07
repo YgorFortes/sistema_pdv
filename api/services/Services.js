@@ -1,5 +1,4 @@
 import db from '../db/conecaodb.js';
-import knex from 'knex';
 class Services {
   constructor(nomeModelo){
     this.nomeModelo = nomeModelo
