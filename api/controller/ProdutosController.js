@@ -71,7 +71,7 @@ class ProdutosControlller {
         
       if(req.file){
         const data = new Date().getTime();
-        const nomeArquivo =`${data}_${req.file.originalname}`
+        const nomeArquivo =`${data}_${req.file.originalname}`;
         const urlImagem = await uploadImagem(nomeArquivo, req.file.buffer);
         dadosValidados.body.produto_imagem = urlImagem;
       }
