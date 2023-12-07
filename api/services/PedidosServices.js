@@ -81,7 +81,7 @@ class PedidosServices {
         });
       }
 
-      // enviarEmail(clienteExiste.email, pedidoCriado);
+      enviarEmail(clienteExiste, pedidoCriado, produtos);
     
       return {mensagem: 'Pedido Criado! Verifique o email', pedido: pedidoCriado};
     } catch (erro) {
