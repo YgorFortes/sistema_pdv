@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
+import { gerarTemplateEmail } from './gerarTemplateEmail.js';
 
-function enviarEmail(email, pedido){
+function enviarEmail(cliente, pedido, produtos){
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     secure: true,
@@ -16,34 +17,13 @@ function enviarEmail(email, pedido){
   })
 
   try {
+    const htmlEmail = gerarTemplateEmail(cliente, pedido, produtos);
     const informacoes =  transporter.sendMail({
       from: `Ygor Fortes <${process.env.EMAIL_USER}>`,
-      to: email,
+      to: cliente.email,
       subject: 'Parabéns! Sua compra foi concluida com sucesso.',
       text: `Sua sua compra numero ${pedido.id}, foi concluida no dia ${pedido.created_at}. `,
-      html: `<!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="UTF-8" />
-          <title>Compra Concluída</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              font-size: 16px;
-              line-height: 1.5;
-              color: #333;
-              background-color: #f5f5f5;
-            }
-            p {
-              margin: 0 0 1em;
-            }
-          </style>
-        </head>
-        <body>
-          <p>Sua sua compra numero ${pedido.id}, foi concluida no dia ${pedido.created_at}.</p>
-        </body>
-      </html>
-      `
+      html: htmlEmail
     });
     return informacoes;
   } catch (erro) {
@@ -52,8 +32,5 @@ function enviarEmail(email, pedido){
 }
 
 
-function gerarHtmlEmail(pedido){
-
-}
 
 export {enviarEmail}
