@@ -1,18 +1,21 @@
 function gerarTemplateEmail(cliente, pedidos, produtos){
-
+  const {pedido} = pedidos;
   let produtosHtml = '';
 
   pedidos.pedido_produtos.forEach((pedido_produto, index)=>{
     produtosHtml +=  `
-    <div class="pedido-section">
-      <h2>Pedidos Comprados:</h2>
-      <!-- Detalhes dos pedidos -->
-      <ul class="details-list">
-        <li><strong>Item:</strong> ${produtos[index].descricao}</li>
-        <li><strong>Quantidade:</strong> ${pedido_produto.quantidade_produto}</li>
-        <li><strong>Valor Produto:</strong> R$ ${pedido_produto.valor_produto}</li>
-      </ul>
-    </div>`
+    <table>
+      <tr style="background-color: #f1f1f1;">
+          <th style="text-align: left; min-width: 100px; padding: 10px 0 10px 10px; vertical-align: top;">Descrição:</th>
+          <th style="text-align: left; min-width: 80px; padding: 10px 0 10px 10px; vertical-align: top;">Quantidade:</th>
+          <th style="text-align: right; padding: 10px 10px 10px 0; vertical-align: top;">Valor:</th>
+      </tr>
+      <tr>
+          <td style="padding-top: 15px; padding-left: 10px; word-break: break-all;">${produtos[index].descricao}</td>
+          <td style="padding-top: 15px; padding-left: 10px; word-break: break-all;">${pedido_produto.quantidade_produto}s</td>
+          <td style="text-align: right; padding-top: 15px; padding-right: 10px; word-break: break-all;">R$${pedido_produto.valor_produto}</td>
+      </tr>
+    </table>`
   });
       
 
@@ -25,93 +28,79 @@ function gerarTemplateEmail(cliente, pedidos, produtos){
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Detalhes do Pagamento</title>
       <style>
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4; /* Cor de fundo mais clara */
-        color: #333333; /* Cor do texto principal */
-    }
-
-    .container {
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #ffffff; /* Cor de fundo para o contêiner */
-        border-radius: 8px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    }
-
-    header {
-        background-color: #3498db; /* Azul claro */
-        color: #ffffff;
-        text-align: center;
-        padding: 20px;
-        border-radius: 8px 8px 0 0;
-    }
-
-    h1 {
-        color: #3498db; /* Azul claro */
-        margin: 0;
-    }
-
-    p {
-        color: #555555; /* Cor do texto um pouco mais escura para contraste */
-        margin-bottom: 10px;
-    }
-
-    .pedido-section,
-    .payment-details {
-        margin-top: 20px;
-        padding: 15px;
-        background-color: #ecf0f1; /* Cinza azulado mais claro */
-        border-radius: 8px;
-    }
-
-    .pedido-section h2,
-    .payment-details h2 {
-        color: #3498db; /* Azul claro */
-        margin-top: 0;
-    }
-
-    .details-list {
-        list-style: none;
-        padding: 0;
-    }
-
-    .details-list li {
-        margin-bottom: 10px;
-        color: #555555; /* Cor do texto um pouco mais escura para contraste */
-    }
-
-    .button-container {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .button {
-        display: inline-block;
-        padding: 15px 30px;
-        font-size: 18px;
-        text-align: center;
-        text-decoration: none;
-        background-color: #3498db; /* Azul claro */
-        color: #ffffff;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-    }
-
-    .button:hover {
-        background-color: #2980b9; /* Azul um pouco mais escuro ao passar o mouse */
-    }
-
-    footer {
-        margin-top: 20px;
-        padding: 15px;
-        background-color: #ecf0f1; /* Cinza azulado mais claro para o rodapé */
-        text-align: center;
-        border-radius: 0 0 8px 8px;
-    }
+          body {
+              font-family: Arial, Helvetica, sans-serif;
+              margin: 0;
+              padding: 0;
+              background-color: #f4f4f4;
+              color: #858585;
+          }
+  
+          .container {
+              margin: 0 auto;
+              max-width: 600px;
+          }
+  
+          header {
+              padding-top: 50px;
+              text-align: center;
+          }
+  
+          header img {
+              max-width: 70px;
+              height: auto;
+              display: block;
+              margin: 0 auto;
+          }
+  
+          header div {
+              font-weight: bold;
+              font-size: 50px;
+              line-height: 120px;
+          }
+  
+          .content {
+              background-color: #ffffff;
+              padding: 30px;
+          }
+  
+          .content div {
+              text-align: center;
+              line-height: 24px;
+          }
+  
+          .content span {
+              font-size: 18px;
+              font-weight: bold;
+          }
+  
+          table {
+              width: 100%;
+              font-size: 16px;
+              line-height: 24px;
+              border-spacing: 0;
+              margin-bottom: 20px;
+              border-top: 1px solid #e2e3e4;
+          }
+  
+          th, td {
+              padding: 15px;
+          }
+  
+          .footer {
+              padding: 20px 0;
+          }
+  
+          .footer div {
+              font-weight: bold;
+              text-align: center;
+              line-height: 26px;
+          }
+  
+          .footer div p {
+              font-size: 12px;
+              color: #858585;
+          }
       </style>
   </head>
   
@@ -119,32 +108,60 @@ function gerarTemplateEmail(cliente, pedidos, produtos){
   
       <div class="container">
           <header>
-              <h1>Detalhes do Pagamento</h1>
+
           </header>
   
-          <p>Olá ${cliente.nome},</p>
-          <p>Seu pedido foi concluído com sucesso!</p>
+          <div class="content">
+              <div>
+                  <span>${cliente.nome},</span><br>
+                  Seu pedido foi concluído.<br><br>
+              </div>
   
-          ${produtosHtml}
+              <table>
+                  <tr>
+                      <td style="padding-top: 15px;"><strong>ID do pedido:</strong></td>
+                      <td style="padding-top: 15px;"><strong>Enviado para:</strong></td>
+                  </tr>
+                  <tr>
+                      <td>${pedido.id}</td>
+                      <td><a href="mailto:${cliente.email}" target="_blank">${cliente.email}</a></td>
+                  </tr>
+              </table>
   
-          <!-- Detalhes do pagamento -->
-          <div class="payment-details">
-              <h2>Detalhes do Pagamento:</h2>
-              <ul class="details-list">
-                  <li><strong>Número do pedido:</strong> ${pedidos.pedido.id}</li>
-                  <li><strong>Criado:</strong> ${pedidos.pedido.created_at}</li>
-                  <li><strong>Valor Total:</strong> R$ ${pedidos.pedido.valor_total}</li>
-              </ul>
+              <div class="invoice-info">
+                  <strong>AQUI ESTÁ O SEU PEDIDO:</strong>
+              </div>
+  
+              ${produtosHtml}
+              <!-- ... (outras seções e tabelas) ... -->
+  
+              <!-- Tabela para o valor total do pedido -->
+              <table>
+                  <tr>
+                      <td style="text-align: right;"><strong>Total do Pedido:</strong></td>
+                      <td style="text-align: right;">R$ ${pedido.valor_total}</td>
+                  </tr>
+              </table>
+  
+              <table>
+                <tr>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td style="padding-top: 15px;">
+                        <div style="text-align: center;">
+                            <strong>Agradecemos pela compra!</strong><br>
+                        </div>
+                    </td>
+                </tr>
+            </table>
           </div>
-  
-          <footer>
-              <p>Obrigado pela sua preferência!</p>
-          </footer>
       </div>
   
   </body>
   
   </html>
+  
   
   `
   return htmlEmail;
