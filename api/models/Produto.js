@@ -55,7 +55,7 @@ class Produto {
     const pedidosProdutosSelecionado = Promise.all(
       produtos.map(async (produto) => {
         const pedidoProduto = await PedidoProduto.pegarPorId({ produto_id: produto.id });
-        return { produto, pedido_produtos: pedidoProduto };
+        return  {produto, pedido_produtos: pedidoProduto} ;
       })
     );
 
