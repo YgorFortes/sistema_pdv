@@ -1,9 +1,9 @@
-import { uploadImagem } from "../middlewares/uploadImagem.js";
+import { uploadImagem, excluirImagem } from "../middlewares/GerenciadorImagensBackblaze.js";
 import { produtosPostSchema, produtosPutSchema, produtosGetSchema, produtosDeleteSchema } from "../schemas/produtosSchema.js";
 import Services from '../services/index.js';
 const {ProdutosServices} = Services;
 const produtosServices = new ProdutosServices;
-import axios from "axios";
+
 
 
 
@@ -45,7 +45,8 @@ class ProdutosControlller {
         const urlImagem = await uploadImagem(req.file.filename);
         produto.produto_imagem = urlImagem;
       }
-
+      
+      console.log(produto)
       const resultado = await produtosServices.cadastrarProduto(produto);
 
       return res.status(201).json(resultado);
@@ -85,12 +86,28 @@ class ProdutosControlller {
   }
 
 
-  static async deletarProduto(req, res, next){
+  static async desativarProduto(req, res, next){
     try {
       const dadosValidados =  await produtosDeleteSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
+
       const resultado = await produtosServices.desativarProduto(id);
+
+      return res.status(200).json(resultado);
+    } catch (erro) {
+      next(erro);
+    }
+    
+  }
+
+  static async excluirProduto(req, res, next){
+    try {
+      const dadosValidados =  await produtosDeleteSchema.fields.params.validate(req.params);
+      const {id} = dadosValidados;
+
+
+      const resultado = await produtosServices.excluirProduto(id);
 
       return res.status(200).json(resultado);
     } catch (erro) {

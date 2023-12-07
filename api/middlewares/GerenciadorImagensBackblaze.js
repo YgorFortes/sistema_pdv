@@ -33,6 +33,7 @@ const multerUploader = multer({
   }
 });
 
+
 async function uploadImagem(nomeArquivo){
   try {
     await b2.authorize();
@@ -42,7 +43,7 @@ async function uploadImagem(nomeArquivo){
       bucketId: process.env.BUCKETID,
     });
 
-    
+
     
     const caminhoArquivo = path.resolve(pathFile, nomeArquivo);
     const arquivoBuffer = fs.readFileSync(caminhoArquivo);
@@ -54,11 +55,13 @@ async function uploadImagem(nomeArquivo){
       data: arquivoBuffer, 
     });
 
-    if(!uploadResposta.status === 200){
+    const fileId = uploadResposta.data.fileId;
+
+    if(uploadResposta.status !== 200){
       throw new ErroCustomizado('Serviço de upload indisponível.', 502);
     }
 
-    const url  = `${process.env.URLBACKBLAZE}?fileId=${uploadResposta.data.fileId}`
+    const url  = `${process.env.URLBACKBLAZE}?fileId=${fileId}`;
     return url;
   
   } catch (erro) {
@@ -66,6 +69,30 @@ async function uploadImagem(nomeArquivo){
   }
 }
 
-export {uploadImagem, multerUploader};
+async function excluirImagem(fileId){
+  await b2.authorize();
+
+  const respostaNomeArquivo = await b2.getFileInfo({
+    fileId: fileId,
+  });
+  
+
+  const nomeArquivo = respostaNomeArquivo.data.fileName;
+
+
+
+  const resposta = await b2.deleteFileVersion({
+    fileId: fileId,
+    fileName: nomeArquivo,
+  });
+
+
+  if(resposta.status !== 200){
+    throw new ErroCustomizado('Não foi possivel excluir imagem do servidor.', 502);
+  }
+
+}
+
+export { uploadImagem, excluirImagem , multerUploader };
 
 
