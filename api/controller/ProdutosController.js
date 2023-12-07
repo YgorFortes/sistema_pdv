@@ -1,4 +1,4 @@
-import { uploadImagem, excluirImagem } from "../middlewares/GerenciadorImagensBackblaze.js";
+import { uploadImagem } from "../middlewares/GerenciadorImagensBackblaze.js";
 import { produtosPostSchema, produtosPutSchema, produtosGetSchema, produtosDeleteSchema } from "../schemas/produtosSchema.js";
 import Services from '../services/index.js';
 const {ProdutosServices} = Services;
@@ -41,12 +41,14 @@ class ProdutosControlller {
       const dadosProdutoConvertido = JSON.parse(req.body.produto);
       const produto = await produtosPostSchema.fields.body.validate(dadosProdutoConvertido);
 
+
       if(req.file){
-        const urlImagem = await uploadImagem(req.file.filename);
+        const data = new Date().getTime();
+        const nomeArquivo =`${data}_${req.file.originalname}`
+        const urlImagem = await uploadImagem(nomeArquivo, req.file.buffer);
         produto.produto_imagem = urlImagem;
       }
-      
-      console.log(produto)
+
       const resultado = await produtosServices.cadastrarProduto(produto);
 
       return res.status(201).json(resultado);
@@ -59,18 +61,21 @@ class ProdutosControlller {
 
     try {
       const dadosProdutoConvertido = JSON.parse(req.body.produto);
-
       const dadosValidados = await produtosPutSchema.validate(
         {
           body: dadosProdutoConvertido, 
           params: req.params
         }
       );
-
+    
+        
       if(req.file){
-        const urlImagem = await uploadImagem(req.file.filename);
+        const data = new Date().getTime();
+        const nomeArquivo =`${data}_${req.file.originalname}`
+        const urlImagem = await uploadImagem(nomeArquivo, req.file.buffer);
         dadosValidados.body.produto_imagem = urlImagem;
       }
+
 
       const novaInfoProduto = dadosValidados.body;
      
@@ -86,13 +91,12 @@ class ProdutosControlller {
   }
 
 
-  static async desativarProduto(req, res, next){
+  static async excluirProduto(req, res, next){
     try {
       const dadosValidados =  await produtosDeleteSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
-
-      const resultado = await produtosServices.desativarProduto(id);
+      const resultado = await produtosServices.excluirProduto(id);
 
       return res.status(200).json(resultado);
     } catch (erro) {
@@ -101,13 +105,12 @@ class ProdutosControlller {
     
   }
 
-  static async excluirProduto(req, res, next){
+  static async desativarProduto(req, res, next){
     try {
       const dadosValidados =  await produtosDeleteSchema.fields.params.validate(req.params);
       const {id} = dadosValidados;
 
-
-      const resultado = await produtosServices.excluirProduto(id);
+      const resultado = await produtosServices.desativarProduto(id);
 
       return res.status(200).json(resultado);
     } catch (erro) {
