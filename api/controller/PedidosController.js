@@ -1,6 +1,9 @@
 import { pedidoPostSchema, pedidoGetSchema } from "../schemas/pedidoSchema.js";
-import PedidosServices from "../services/PedidosServices.js";
+
+import Services from '../services/index.js';
+const {PedidosServices} = Services;
 const pedidoServices  = new PedidosServices();
+
 class PedidosController{
 
   static async listarPedido(req, res, next){

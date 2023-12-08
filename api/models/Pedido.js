@@ -28,23 +28,16 @@ class Pedido {
     const pedidosProdutosSelecionado = Promise.all(
       pedidos.map(async (pedido) => {
         const pedidoProduto = await PedidoProduto.pegarPorId({ pedido_id: pedido.id });
-        return { pedido, pedido_produtos: pedidoProduto };
+        return {pedido, pedido_produtos: pedidoProduto };
       })
     );
-
    return await pedidosProdutosSelecionado;
   }
 
-  static async pegarPorId(id){
-    const pedidos = await db('pedidos').where(id);
-    const pedidosProdutosSelecionado = Promise.all(
-      pedidos.map(async (pedido) => {
-        const pedidoProduto = await PedidoProduto.pegarPorId({ pedido_id: pedido.id });
-        return { pedido, pedido_produtos: pedidoProduto };
-      })
-    );
-
-   return await pedidosProdutosSelecionado;
+  static async pegarPorId(id) {
+    const pedido = await db('pedidos').where(id).first();
+    const pedidoProdutos = await PedidoProduto.pegarPorId({pedido_id: pedido.id});
+    return {...pedido, pedido_produtos: pedidoProdutos}
   }
 
     
@@ -60,13 +53,14 @@ class Pedido {
         updated_at: this.updated_at
       }
     );
-     
-    this.pedido_produtos.forEach(async(pedidoProduto) => {
-      const pedidoProdutoCriado = new PedidoProduto({...pedidoProduto, pedido_id: idPedidoCriado})
-      pedidoProdutoCriado.salvar();
-    });
 
-    const [pedidoCriado] = await Pedido.pegarPorId({id: idPedidoCriado});
+    for(const pedidoProduto of this.pedido_produtos){
+      const pedidoProdutoCriado = new PedidoProduto({...pedidoProduto, pedido_id: idPedidoCriado})
+      await pedidoProdutoCriado.salvar();
+    }
+
+    const pedidoCriado = await Pedido.pegarPorId({id: idPedidoCriado});
+
     return pedidoCriado;
   }
 
@@ -107,6 +101,7 @@ class Pedido {
           quantidade_produto: pedidos[index].quantidade_produto,
           valor_produto: (produto.valor * pedidos[index].quantidade_produto)
         }
+      
       );
       this.pedido_produtos.push(pedido_produto);
     })

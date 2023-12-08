@@ -3,6 +3,7 @@ import ErroCustomizado from "../erros/ErroCustomizado.js";
 import ProdutosServices from "./ProdutosServices.js";
 import ClientesServices from "./ClientesServices.js";
 import { enviarEmail } from "../helpers/enviarEmail.js";
+
 class PedidosServices {
   constructor(){
     this.produtosServices = new ProdutosServices();
@@ -57,7 +58,6 @@ class PedidosServices {
       for(let pedido_produto of pedido_produtos){
         const {produto_id, quantidade_produto} = pedido_produto;
         const produto = await this.produtosServices.listarProdutoPorId(produto_id);
-
         const erroProdutoEstoque = validaProdutoEstoque(produto, quantidade_produto);
         
         if(erroProdutoEstoque){

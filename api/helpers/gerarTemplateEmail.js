@@ -1,8 +1,8 @@
-function gerarTemplateEmail(cliente, pedidos, produtos){
-  const {pedido} = pedidos;
+function gerarTemplateEmail(cliente, pedido, produtos){
+ 
   let produtosHtml = '';
 
-  pedidos.pedido_produtos.forEach((pedido_produto, index)=>{
+  pedido.pedido_produtos.forEach((pedido_produto, index)=>{
     produtosHtml +=  `
     <table>
       <tr style="background-color: #f1f1f1;">
@@ -12,8 +12,8 @@ function gerarTemplateEmail(cliente, pedidos, produtos){
       </tr>
       <tr>
           <td style="padding-top: 15px; padding-left: 10px; word-break: break-all;">${produtos[index].descricao}</td>
-          <td style="padding-top: 15px; padding-left: 10px; word-break: break-all;">${pedido_produto.quantidade_produto}s</td>
-          <td style="text-align: right; padding-top: 15px; padding-right: 10px; word-break: break-all;">R$${pedido_produto.valor_produto}</td>
+          <td style="padding-top: 15px; padding-left: 10px; word-break: break-all;">${pedido_produto.quantidade_produto}</td>
+          <td style="text-align: right; padding-top: 15px; padding-right: 10px; word-break: break-all;">R$${pedido_produto.valor_produto.toFixed(2)}</td>
       </tr>
     </table>`
   });
@@ -113,8 +113,8 @@ function gerarTemplateEmail(cliente, pedidos, produtos){
   
           <div class="content">
               <div>
-                  <span>${cliente.nome},</span><br>
-                  Seu pedido foi concluído.<br><br>
+                  <span>Olá${cliente.nome}, Olá! Obrigado por escolher nossos serviços. Este e-mail é para confirmar que seu pedido foi concluído com sucesso. </span><br>
+                  Por favor, encontre abaixo os detalhes do pedido<br><br>
               </div>
   
               <table>
@@ -139,7 +139,7 @@ function gerarTemplateEmail(cliente, pedidos, produtos){
               <table>
                   <tr>
                       <td style="text-align: right;"><strong>Total do Pedido:</strong></td>
-                      <td style="text-align: right;">R$ ${pedido.valor_total}</td>
+                      <td style="text-align: right;">R$ ${pedido.valor_total.toFixed(2)}</td>
                   </tr>
               </table>
   

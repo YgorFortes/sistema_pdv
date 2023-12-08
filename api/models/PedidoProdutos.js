@@ -28,6 +28,10 @@ class PedidoProduto {
     return await db('pedido_produtos').where(id);
   }
 
+  static async pergarPorPedidoId(pedido_id){
+    return await db('pedido_produtos').where({pedido_id});
+  }
+
   async criar(){
     const [idResultadoCriado] = await db('pedido_produtos').insert(this);
     const [pedidoCriado] = await db('pedido_produtos').where({id: idResultadoCriado});
