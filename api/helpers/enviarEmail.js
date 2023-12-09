@@ -25,6 +25,7 @@ function enviarEmail(cliente, pedido, produtos){
       text: `Sua sua compra numero ${pedido.id}, foi concluida no dia ${pedido.created_at}. `,
       html: htmlEmail
     });
+    
     return informacoes;
   } catch (erro) {
     throw erro;
