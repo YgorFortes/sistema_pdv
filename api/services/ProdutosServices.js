@@ -55,12 +55,12 @@ class ProdutosServices {
   async atualizarProduto(id, dadosProduto){
     try {
       const [produtoAtual] = await Produto.pegarPeloId({id});
-  
-      const [categoriaExiste] = await this.categoriasServices.listarCategoriaPorId({id: produtoAtual.categoria_id});
-
       if(!produtoAtual){
         throw new ErroCustomizado('Produto não encontrado.', 404);
       }
+      
+      
+      const [categoriaExiste] = await this.categoriasServices.listarCategoriaPorId({id: dadosProduto.categoria_id});
 
       if(!categoriaExiste){
         throw new ErroCustomizado('Categoria não encontrado.', 404);
