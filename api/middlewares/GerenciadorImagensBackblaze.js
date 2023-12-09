@@ -71,11 +71,11 @@ async function excluirImagem(fileId){
     fileName: nomeArquivo,
   });
 
-
+  
   if(resposta.status !== 200){
     throw new ErroCustomizado('Não foi possivel excluir imagem do servidor.', 502);
   }
-
+  return resposta;
 }
 
 export { uploadImagem, excluirImagem , multerUploader };
