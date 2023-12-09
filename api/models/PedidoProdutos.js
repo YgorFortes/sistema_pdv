@@ -25,7 +25,8 @@ class PedidoProduto {
   }
 
   static async pegarPorId(id){
-    return await db('pedido_produtos').where(id);
+    const pedidoProduto = await db('pedido_produtos').where(id);
+    return pedidoProduto;
   }
 
   static async pergarPorPedidoId(pedido_id){
