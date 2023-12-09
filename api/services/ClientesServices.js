@@ -28,7 +28,7 @@ class ClientesServices  {
   async  criarCliente(dadosCliente){
     const {email, cpf} = dadosCliente;
     try {
-      await verificarEmailCpfUnicos(email, cpf);
+      await this.verificarEmailCpfUnicos(email, cpf);
 
       const clienteNovo = new Cliente(dadosCliente);
       const clienteCadastrado = await clienteNovo.salvar();
@@ -49,7 +49,7 @@ class ClientesServices  {
         throw new ErroCustomizado('Cliente não encontrado.', 404);
       }
 
-      await verificarEmailCpfUnicos(email, cpf, id);
+      await this.verificarEmailCpfUnicos(email, cpf, id);
 
       const clienteAtualizado = new Cliente({id: clienteAtual.id, ...dadosCliente} );
 
@@ -79,26 +79,25 @@ class ClientesServices  {
     
   }
 
-}
-
-async function verificarEmailCpfUnicos(email, cpf, id = null){
-
-  try {
-    const [unidadeCadastrada] = await Cliente.verificaEmailCpfUnico(email, cpf, id);
-    if(unidadeCadastrada){
-      const mensagens = {
-        email: 'Email já cadastrado.',
-        cpf: 'Cpf já cadastrado.' , 
-        ambos:  'Cpf e email já cadastrados.' 
+  async verificarEmailCpfUnicos(email, cpf, id = null){
+    try {
+      const [unidadeCadastrada] = await Cliente.verificaEmailCpfUnico(email, cpf, id);
+      if(unidadeCadastrada){
+        const mensagens = {
+          email: 'Email já cadastrado.',
+          cpf: 'Cpf já cadastrado.' , 
+          ambos:  'Cpf e email já cadastrados.' 
+        }
+        const mensagem = mensagens[unidadeCadastrada.email === email && unidadeCadastrada.cpf === cpf ? 'ambos' : unidadeCadastrada.email === email ? 'email': 'cpf'];
+        throw new ErroCustomizado(mensagem, 409);
       }
-      const mensagem = mensagens[unidadeCadastrada.email === email && unidadeCadastrada.cpf === cpf ? 'ambos' : unidadeCadastrada.email === email ? 'email': 'cpf'];
-      throw new ErroCustomizado(mensagem, 409);
+    } catch (erro) {
+      throw erro;
     }
-  } catch (erro) {
-    throw erro;
   }
-  
+
 }
+
+
 
 export default ClientesServices;
-export {verificarEmailCpfUnicos}
