@@ -113,7 +113,7 @@ function gerarTemplateEmail(cliente, pedido, produtos){
   
           <div class="content">
               <div>
-                  <span>Olá${cliente.nome}, Olá! Obrigado por escolher nossos serviços. Este e-mail é para confirmar que seu pedido foi concluído com sucesso. </span><br>
+                  <span>Olá ${cliente.nome}, Olá! Obrigado por escolher nossos serviços. Este e-mail é para confirmar que seu pedido foi concluído com sucesso. </span><br>
                   Por favor, encontre abaixo os detalhes do pedido<br><br>
               </div>
   
