@@ -1,8 +1,11 @@
 import ClientesServices from "../../services/ClientesServices.js";
 const clienteServices = new ClientesServices();
-import { clientePostSchema, clientePutSchema, clienteGetSchema, clienteDeleteSchema } from "../../schemas/clientesSchema.js";
+import { clientePostSchema, clientePutSchema } from "../../schemas/clientesSchema.js";
 
 import {describe , expect, it, jest} from '@jest/globals';
+
+
+
 
 describe('Testando listarClientes no ClienteServices', ()=>{
   it('Deve trazer um array de clientes com propriedades de id, nome, e cpf ', async ()=>{
@@ -29,7 +32,6 @@ describe('Testando listarClientes no ClienteServices', ()=>{
 
     expect(Array.isArray(clientes)).toBe(true);
 
-   
   })
 });
 
@@ -435,3 +437,4 @@ describe('Testando excluirCLiente de ClienteServices', ()=>{
     expect(clienteBuscado).toEqual([]);
   })
 });
+
