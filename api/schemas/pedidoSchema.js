@@ -17,10 +17,11 @@ const pedidoPostSchema = yup.object({
           .positive('O campo produto_id só recebe números positivos')
           .required('O campo produto_id é obrigatório.'
         ),
-        quantidade_produto: yup.number().min(0, 'O quantidade_produto deve ser igual ou maior que 0')
+        quantidade_produto: yup
+          .number()
+          .min(1, 'O quantidade_produto deve ser maior que 0.')
           .typeError('O campo quantidade_produto só recebe números')
           .integer('O campo quantidade_produto só recebe números inteiros')
-          // .positive('O campo quantidade_produto só recebe números positivos')
           .required('O campo quantidade_produto é obrigatório.'
         ),
       })
@@ -59,7 +60,7 @@ const pedidoGetSchema = yup.object({
           .positive('O campo produto_id só recebe números positivos')
           .required('O campo produto_id é obrigatório.'
         ),
-        quantidade_produto: yup.number().min(0, 'O quantidade_produto deve ser igual ou maior que 0')
+        quantidade_produto: yup.number().min(1, 'O quantidade_produto deve ser igual ou maior que 0')
           .typeError('O campo quantidade_produto só recebe números')
           .integer('O campo quantidade_produto só recebe números inteiros')
           // .positive('O campo quantidade_produto só recebe números positivos')
